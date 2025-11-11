@@ -1,0 +1,29 @@
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 140
+
+Metrics/MethodLength:
+  Max: 25
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+# Support LowType return value "-> { T }" syntax.
+Style/TrailingBodyOnMethodDefinition:
+  Enabled: false
+Layout/IndentationConsistency:
+  Enabled: false
+Layout/MultilineBlockLayout:
+  Enabled: false
+Style/DefWithParentheses:
+  Enabled: false
+Lint/Void:
+  Enabled: false
