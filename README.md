@@ -33,5 +33,5 @@ Instead of the model defining relationships and associated queries to the databa
 ## Architecture
 
 <p align="center">
-  <img src="assets/Architecture.svg" alt="Raindeer architecture diagram" style="max-width: 1000px;">
+  <img src="assets/Architecture.svg" alt="Raindeer architecture diagram" style="max-width: 800px;">
 </p>
