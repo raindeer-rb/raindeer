@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'low_loop'
+
+host = ENV.fetch('RAIN_HOST', '127.0.0.1').freeze
+port = ENV.fetch('RAIN_PORT', 4133)
+matrix_mode = ENV.fetch('RAIN_MATRIX_MODE', false)
+mirror_mode = ENV.fetch('RAIN_MIRROR_MODE', false)
+
+config = Struct.new(:host, :port, :matrix_mode, :mirror_mode)
+
+LowLoop.new.start(config: config.new(host, port, matrix_mode, mirror_mode))
