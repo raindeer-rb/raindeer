@@ -1,9 +1,8 @@
 require 'low_type'
-
-require_relative 'rain_router'
+require_relative 'router'
 
 class Raindeer
-  def routes(&)
-    Rain::Router::DSL.class_eval(&)
+  def router(&)
+    Rain::Router::DSL.class_eval(&block)
   end
 end
