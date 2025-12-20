@@ -7,36 +7,31 @@ module Rain
     include LowType
 
     extend Observers
-    observe LowLoop
+    observe ::Low::Loop
 
     class << self
-      def handle(event: ::Low::RequestEvent)
+      # TODO: Add type: ::Low::RequestEvent
+      def handle(event: nil)
         route = PrefixTree.parse(event.request.path)
         route_event = RouteEvent.new(route:)
         trigger route_event
       end
     end
 
-    class DSL
-      extend Observers
+    def get(route = String)
+      observable route
+    end
 
-      class << self
-        def get(route)
-          observable route
-        end
+    def post(route = String)
+      observable route
+    end
 
-        def post(route)
-          observable route
-        end
+    def update(route = String)
+      observable route
+    end
 
-        def update(route)
-          observable route
-        end
-
-        def delete(route)
-          observable route
-        end
-      end
+    def delete(route = String)
+      observable route
     end
   end
 end
