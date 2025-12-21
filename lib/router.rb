@@ -8,8 +8,8 @@ require_relative 'events/route_event'
 module Rain
   class Router
     include LowType
+    include Observers
 
-    extend Observers
     observe LowLoop
 
     class << self
