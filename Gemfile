@@ -6,8 +6,9 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'low_type', path: '../low_type'
   gem 'low_event', path: '../low_event'
+  gem 'low_loop', path: '../low_loop'
+  gem 'low_type', path: '../low_type'
   gem 'observers', path: '../observers'
 
   gem 'pry'
