@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require 'low_event'
+require 'low_loop'
 require 'observers'
 require_relative 'events/route_event'
 
@@ -7,7 +10,7 @@ module Rain
     include LowType
 
     extend Observers
-    observe ::Low::Loop
+    observe LowLoop
 
     class << self
       # TODO: Add type: ::Low::RequestEvent
