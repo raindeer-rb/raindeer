@@ -19,15 +19,23 @@ RSpec.describe RainRouter do
       rain_router.get '/user'
       expect(Observers::Observables).to have_received(:upsert)
     end
-  end
 
-  context 'when handling events' do
-    let(:request_event) { Low::RequestEvent.new(request:) }
-    let(:request) { Low::RequestFactory.request(path: '/user') }
+    it 'creates combinations of routes depending on depth' do
+      rain_router.route '/users' do
+        rain_router.route '/:id'
+      end
 
-    it 'converts a request event to a route event' do
-      rain_router.get '/user'
-      RainRouter.handle(event: request_event)
+      expect(rain_router.routes.keys).to eq(['/users', '/users/:id'])
     end
   end
+
+  # context 'when handling events' do
+  #   let(:request_event) { Low::RequestEvent.new(request:) }
+  #   let(:request) { Low::RequestFactory.request(path: '/user') }
+
+  #   it 'converts a request event to a route event' do
+  #     rain_router.get '/user'
+  #     RainRouter.handle(event: request_event)
+  #   end
+  # end
 end

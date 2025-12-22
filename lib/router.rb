@@ -12,13 +12,22 @@ module Rain
 
     observe LowLoop
 
-    class << self
-      # TODO: Add type: ::Low::RequestEvent
-      def handle(event: nil)
-        route = PrefixTree.parse(event.request.path)
-        route_event = RouteEvent.new(route:)
-        trigger route_event
-      end
+    attr_reader :routes
+
+    def initialize
+      @routes = {}
+      @breadcrumbs = []
+    end
+
+    def route(route, verb: 'GET')
+      @breadcrumbs << route
+
+      route = @breadcrumbs.join
+      @routes[route] = route
+
+      yield if block_given?
+
+      @breadcrumbs.pop
     end
 
     def get(route = String)
@@ -35,6 +44,16 @@ module Rain
 
     def delete(route = String)
       observable route
+    end
+
+    class << self
+      # TODO: Add type: ::Low::RequestEvent
+      def handle(event:)
+        binding.pry
+        route = Trie.parse(event.request.path)
+        route_event = RouteEvent.new(route:)
+        trigger route_event
+      end
     end
   end
 end
