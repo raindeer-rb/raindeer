@@ -19,35 +19,35 @@ module Rain
     def initialize
       @routes = {}
       @breadcrumbs = []
-      @trie = TrieNode.new.insert(path: Route.new(path: '/'))
+      @trie = Trie.new
     end
 
-    def route(route, verbs = [], &block)
-      @breadcrumbs << route
+    def route(path, verbs = [], &block)
+      @breadcrumbs << path
 
-      route = @breadcrumbs.join
-      observable route
-      @routes[route] = Route.new(path:, verbs: [*verbs])
+      path = @breadcrumbs.join
+      observable path
+      @routes[path] = Route.new(path:, verbs: [*verbs])
 
       block.call if block_given?
 
       @breadcrumbs.pop
     end
 
-    def get(route = String, &block)
-      route(route, 'GET', &block)
+    def get(path = String, &block)
+      route(path, 'GET', &block)
     end
 
-    def post(route = String, &block)
-      route(route, 'POST', &block)
+    def post(path = String, &block)
+      route(path, 'POST', &block)
     end
 
-    def update(route = String, &block)
-      route(route, 'UPDATE', &block)
+    def update(path = String, &block)
+      route(path, 'UPDATE', &block)
     end
 
-    def delete(route = String, &block)
-      route(route, 'DELETE', &block)
+    def delete(path = String, &block)
+      route(path, 'DELETE', &block)
     end
 
     class << self

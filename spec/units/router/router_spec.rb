@@ -20,13 +20,13 @@ RSpec.describe RainRouter do
       expect(Observers::Observables).to have_received(:upsert)
     end
 
-    it 'creates combinations of routes depending on depth' do
+    it 'creates combinatorial routes' do
       rain_router.route '/users' do
         rain_router.get '/:id'
       end
 
-      expect(rain_router.routes['/users']).to have_attributes(route: '/users', verbs: [])
-      expect(rain_router.routes['/users/:id']).to have_attributes(route: '/users/:id', verbs: ['GET'])
+      expect(rain_router.routes['/users']).to have_attributes(path: '/users', verbs: [])
+      expect(rain_router.routes['/users/:id']).to have_attributes(path: '/users/:id', verbs: ['GET'])
     end
   end
 
