@@ -14,11 +14,12 @@ module Rain
 
     observe LowLoop
 
-    attr_reader :routes
+    attr_reader :routes, :trie
 
     def initialize
       @routes = {}
       @breadcrumbs = []
+      @trie = TrieNode.new.insert(path: Route.new(path: '/'))
     end
 
     def route(route, verbs = [], &block)
