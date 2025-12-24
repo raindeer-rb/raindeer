@@ -2,6 +2,7 @@
 
 require 'pry'
 require 'pry-nav'
+require 'low_type'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -15,4 +16,9 @@ RSpec.configure do |config|
     # Large diff when expected objects don't match.
     expectations.max_formatted_output_length = 10_000
   end
+end
+
+LowType.configure do |config|
+  config.output_mode = :value
+  config.output_size = 100
 end
