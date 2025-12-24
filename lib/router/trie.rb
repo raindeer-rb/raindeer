@@ -21,8 +21,8 @@ module Rain
     def insert(route:)
       current_node = @root_node
 
-      route.path.chars.each do |char|
-        current_node = current_node.nodes[char] || current_node.nodes[char] = TrieNode.new
+      route.path.chars.each do |key|
+        current_node = current_node.sub_node(key:)
       end
 
       current_node.route = route
