@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rain
   class Route
     include LowType

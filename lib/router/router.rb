@@ -52,7 +52,6 @@ module Rain
     class << self
       # TODO: Add type: ::Low::RequestEvent
       def handle(event:)
-        binding.pry
         route = Trie.parse(event.request.path)
         route_event = RouteEvent.new(route:)
         trigger route_event
