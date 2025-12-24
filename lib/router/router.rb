@@ -6,6 +6,7 @@ require 'observers'
 
 require_relative 'route'
 require_relative 'route_event'
+require_relative 'trie'
 
 module Rain
   class Router
