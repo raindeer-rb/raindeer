@@ -3,5 +3,7 @@
 require_relative '../lib/raindeer'
 
 Raindeer.router do
-  get 'users'
+  get '/users' do
+    get '/:id'
+  end
 end

@@ -2,8 +2,8 @@
 
 require 'observers'
 require 'low_event' # RequestEvent. TODO: Move to LowLoop.
-require_relative '../../lib/router'
-require_relative '../factories/request_factory'
+require_relative '../../../lib/router/router'
+require_relative '../../factories/request_factory'
 
 RSpec.describe RainRouter do
   subject(:rain_router) { described_class.new }
@@ -22,10 +22,11 @@ RSpec.describe RainRouter do
 
     it 'creates combinations of routes depending on depth' do
       rain_router.route '/users' do
-        rain_router.route '/:id'
+        rain_router.get '/:id'
       end
 
-      expect(rain_router.routes.keys).to eq(['/users', '/users/:id'])
+      expect(rain_router.routes['/users']).to have_attributes(route: '/users', verbs: [])
+      expect(rain_router.routes['/users/:id']).to have_attributes(route: '/users/:id', verbs: ['GET'])
     end
   end
 

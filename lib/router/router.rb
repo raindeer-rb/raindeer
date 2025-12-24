@@ -3,7 +3,9 @@
 require 'low_event'
 require 'low_loop'
 require 'observers'
-require_relative 'events/route_event'
+
+require_relative 'route'
+require_relative 'route_event'
 
 module Rain
   class Router
@@ -19,31 +21,32 @@ module Rain
       @breadcrumbs = []
     end
 
-    def route(route, verb: 'GET')
+    def route(route, verbs = [], &block)
       @breadcrumbs << route
 
       route = @breadcrumbs.join
-      @routes[route] = route
+      observable route
+      @routes[route] = Route.new(route:, verbs: [*verbs])
 
-      yield if block_given?
+      block.call if block_given?
 
       @breadcrumbs.pop
     end
 
-    def get(route = String)
-      observable route
+    def get(route = String, &block)
+      route(route, 'GET', &block)
     end
 
-    def post(route = String)
-      observable route
+    def post(route = String, &block)
+      route(route, 'POST', &block)
     end
 
-    def update(route = String)
-      observable route
+    def update(route = String, &block)
+      route(route, 'UPDATE', &block)
     end
 
-    def delete(route = String)
-      observable route
+    def delete(route = String, &block)
+      route(route, 'DELETE', &block)
     end
 
     class << self
