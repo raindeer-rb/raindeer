@@ -26,7 +26,7 @@ module Rain
 
       route = @breadcrumbs.join
       observable route
-      @routes[route] = Route.new(route:, verbs: [*verbs])
+      @routes[route] = Route.new(path:, verbs: [*verbs])
 
       block.call if block_given?
 

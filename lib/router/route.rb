@@ -4,10 +4,10 @@ module Rain
   class Route
     include LowType
 
-    attr_reader :route, :verbs
+    attr_reader :path, :verbs
 
-    def initialize(route: String, verbs: Array[String | nil] | [])
-      @route = route
+    def initialize(path: String, verbs: Array[String | nil] | [])
+      @path = path
       @verbs = verbs
     end
   end
