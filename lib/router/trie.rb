@@ -21,7 +21,7 @@ module Rain
       @root_node.nodes['/']
     end
 
-    def insert(route:, current_node: @root_node, current_index: 0)
+    def merge(route:, current_node: @root_node, current_index: 0)
       path = route.path
 
       while current_index < path.length

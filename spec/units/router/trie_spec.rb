@@ -16,16 +16,16 @@ module Rain
       end.compact.first
     end
 
-    describe '#insert' do
+    describe '#merge' do
       it 'creates the root path node' do
-        trie.insert(route: Route.new(path: '/'))
+        trie.merge(route: Route.new(path: '/'))
         expect(trie.root_path_node.route).to have_attributes(path: '/')
       end
 
       it 'creates a prefix tree of nodes' do
-        trie.insert(route: Route.new(path: '/users'))
-        trie.insert(route: Route.new(path: '/users/:id'))
-        trie.insert(route: Route.new(path: '/users/:id/edit'))
+        trie.merge(route: Route.new(path: '/users'))
+        trie.merge(route: Route.new(path: '/users/:id'))
+        trie.merge(route: Route.new(path: '/users/:id/edit'))
 
         expect(trie.root_path_node.nodes.keys.first).to eq('u')
         expect(trie.root_path_node.nodes.values.first.nodes.keys.first).to eq('s')
@@ -40,7 +40,7 @@ module Rain
     describe '#match' do
       context 'when route is static' do
         it 'creates a route event' do
-          trie.insert(route: Route.new(path: '/users'))
+          trie.merge(route: Route.new(path: '/users'))
 
           expect(trie.match(path: '/users')).to all(be_instance_of(RouteEvent))
           expect(trie.match(path: '/users').first.route).to have_attributes(path: '/users')
@@ -49,7 +49,7 @@ module Rain
 
       context 'when route is dynamic' do
         it 'creates a route event' do
-          trie.insert(route: Route.new(path: '/users/:id'))
+          trie.merge(route: Route.new(path: '/users/:id'))
 
           expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
           expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users/:id')
@@ -58,8 +58,8 @@ module Rain
 
       context 'when multiple routes overlap' do
         before do
-          trie.insert(route: Route.new(path: '/users'))
-          trie.insert(route: Route.new(path: '/users/:id'))
+          trie.merge(route: Route.new(path: '/users'))
+          trie.merge(route: Route.new(path: '/users/:id'))
         end
 
         it 'creates multiple route events' do
