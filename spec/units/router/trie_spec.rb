@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../../lib/router/route'
+require_relative '../../../lib/router/route_event'
 require_relative '../../../lib/router/trie'
 
 module Rain
@@ -15,13 +16,12 @@ module Rain
       end.compact.first
     end
 
-    describe '#initialize' do
+    describe '#insert' do
       it 'creates the root path node' do
+        trie.insert(route: Route.new(path: '/'))
         expect(trie.root_path_node.route).to have_attributes(path: '/')
       end
-    end
 
-    describe '#insert' do
       it 'creates a prefix tree of nodes' do
         trie.insert(route: Route.new(path: '/users'))
         trie.insert(route: Route.new(path: '/users/:id'))
@@ -38,12 +38,40 @@ module Rain
     end
 
     describe '#match' do
-      it 'matches a request path to a static route' do
-        trie.insert(route: Route.new(path: '/users'))
+      context 'when route is static' do
+        it 'creates a route event' do
+          trie.insert(route: Route.new(path: '/users'))
 
-        expect(trie.match(path: '/users')).to all(be_instance_of(Route))
-        expect(trie.match(path: '/users').first).to have_attributes(path: '/users')
+          expect(trie.match(path: '/users')).to all(be_instance_of(RouteEvent))
+          expect(trie.match(path: '/users').first.route).to have_attributes(path: '/users')
+        end
       end
+
+      context 'when route is dynamic' do
+        it 'creates a route event' do
+          trie.insert(route: Route.new(path: '/users/:id'))
+
+          expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
+          expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users/:id')
+        end
+      end
+
+      context 'when multiple routes overlap' do
+        before do
+          trie.insert(route: Route.new(path: '/users'))
+          trie.insert(route: Route.new(path: '/users/:id'))
+        end
+
+        it 'creates multiple route events' do
+          expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
+          expect(trie.match(path: '/users/1')[0].route).to have_attributes(path: '/users')
+          expect(trie.match(path: '/users/1')[1].route).to have_attributes(path: '/users/:id')
+        end
+
+        it 'sets the event action for the route end node to #render' do
+          expect(trie.match(path: '/users/1')[0]).to have_attributes(action: :handle) # /users
+          expect(trie.match(path: '/users/1')[1]).to have_attributes(action: :render) # /users/:id
+        end
       end
     end
   end

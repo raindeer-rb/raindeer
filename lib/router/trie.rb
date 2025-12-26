@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'route'
+require_relative 'route_event'
 require_relative 'trie_node'
 
 module Rain
@@ -8,6 +9,7 @@ module Rain
     include LowType
 
     PARAM_DELIMITERS = ['/', ':'].freeze
+    ARG_DELIMITERS = ['/'].freeze
 
     attr_reader :root_node
 
@@ -37,24 +39,30 @@ module Rain
       current_node.route = route
     end
 
-    def match(path:, current_node: @root_node, current_index: 0)
-      matches = []
+    def match(path:, current_node: @root_node, current_index: 0, params: {})
+      return [] if (key = path[current_index]).nil?
 
-      # Static match.
-      key = path[current_index]
-      return [] if key.nil?
+      route_events = []
+
+      # Static path portion.
       if (child_node = current_node.child(key:))
-        matches << child_node.route if child_node.route
-        return [*matches, *match(path:, current_node: child_node, current_index: current_index += 1)]
+        route_events << RouteEvent.new(route: child_node.route, params:) if child_node.route
+        route_events = [*route_events, *match(path:, current_node: child_node, current_index: current_index + 1, params:)]
       end
 
-      # # Dynamic match.
-      # current_node.params.each do |param|
-      #   _param_key, param_end_index = capture_param(current_index:, path:)
-      #   matches = [*matches, *match(path:, current_node:, current_index: param_end_index)]
-      # end
+      # Dynamic path portion.
+      current_node.params.each do |param|
+        child_node = current_node.child(key: param)
 
-      return matches.compact
+        arg, next_index = capture_arg(arg_start_index: current_index, path:)
+        params[param] = arg
+
+        # TODO: This is the end node but we need events for dynamic routes along the way too.
+        route_events << RouteEvent.new(action: :render, route: child_node.route, params:) if child_node.route && path[next_index].nil?
+        route_events = [*route_events, *match(path:, current_node:, current_index: next_index, params:)]
+      end
+
+      route_events
     end
 
     private
@@ -62,20 +70,34 @@ module Rain
     def next_node(node:, path:)
       return node if node.route&.path == path
 
-      node.nodes()
+      node.nodes
     end
 
     def capture_param(current_index:, path:)
       current_index += 1
-      chars = [':']
+      param = [':']
 
       path[current_index...path.length].chars.each do |char|
         break if PARAM_DELIMITERS.include?(char)
+
         current_index += 1
-        chars << char
+        param << char
       end
 
-      [chars.join, current_index]
+      [param.join, current_index]
+    end
+
+    def capture_arg(arg_start_index:, path:)
+      next_index = arg_start_index
+      arg = []
+
+      path[arg_start_index...path.length].chars.each do |char|
+        arg << char
+        next_index += 1
+        break if path[next_index].nil? || ARG_DELIMITERS.include?(path[next_index])
+      end
+
+      [arg.join, next_index]
     end
   end
 end
