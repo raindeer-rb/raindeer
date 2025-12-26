@@ -36,5 +36,15 @@ module Rain
         expect(matching_node(node: trie.root_path_node, path: '/users/:id/edit')).to be_truthy
       end
     end
+
+    describe '#match' do
+      it 'matches a request path to a static route' do
+        trie.insert(route: Route.new(path: '/users'))
+
+        expect(trie.match(path: '/users')).to all(be_instance_of(Route))
+        expect(trie.match(path: '/users').first).to have_attributes(path: '/users')
+      end
+      end
+    end
   end
 end
