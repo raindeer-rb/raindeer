@@ -13,7 +13,6 @@ module Rain
 
     def initialize
       @root_node = TrieNode.new
-      insert(route: Route.new(path: '/'))
     end
 
     def root_path_node
