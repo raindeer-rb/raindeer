@@ -54,22 +54,45 @@ module Rain
           expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
           expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users/:id')
         end
+      end
 
-        context 'with overlapping routes' do
-          before do
-            trie.merge(route: Route.new(path: '/users'))
-            trie.merge(route: Route.new(path: '/users/:id'))
-          end
+      context 'with overlapping routes' do
+        before do
+          trie.merge(route: Route.new(path: '/users'))
+          trie.merge(route: Route.new(path: '/users/:id'))
+        end
 
-          it 'creates multiple route events' do
-            expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
-            expect(trie.match(path: '/users/1')[0].route).to have_attributes(path: '/users')
-            expect(trie.match(path: '/users/1')[1].route).to have_attributes(path: '/users/:id')
+        it 'creates multiple route events' do
+          expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
+          expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users')
+          expect(trie.match(path: '/users/1').last.route).to have_attributes(path: '/users/:id')
+        end
+
+        context 'when :param is an end node' do
+          it "sets the mid node's event action to #handle" do
+            route_event = trie.match(path: '/users/1').first # /users
+            expect(route_event).to have_attributes(action: :handle)
           end
 
           it "sets the end node's event action to #render" do
-            expect(trie.match(path: '/users/1').first).to have_attributes(action: :handle) # /users
-            expect(trie.match(path: '/users/1').last).to have_attributes(action: :render) # /users/:id
+            route_event = trie.match(path: '/users/1').last # /users/:id
+            expect(route_event).to have_attributes(action: :render)
+          end
+
+          context 'when :param is a mid node' do
+            before do
+              trie.merge(route: Route.new(path: '/users/:id/edit'))
+            end
+
+            it "sets the mid node's event action to #handle" do
+              route_event = trie.match(path: '/users/1/edit')[1] # /users/:id
+              expect(route_event).to have_attributes(action: :handle)
+            end
+
+            it "sets the end node's event action to #render" do
+              route_event = trie.match(path: '/users/1/edit').last # /users/:id/edit
+              expect(route_event).to have_attributes(action: :render)
+            end
           end
         end
       end

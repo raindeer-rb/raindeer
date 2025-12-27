@@ -44,21 +44,25 @@ module Rain
 
       route_events = []
 
-      # Static path portion.
+      # Static request path segment.
       if (child_node = current_node.child(key:))
         route_events << RouteEvent.new(route: child_node.route, params:) if child_node.route
         route_events = [*route_events, *match(path:, current_node: child_node, current_index: current_index + 1, params:)]
       end
 
-      # Dynamic path portion.
+      # Dynamic request path segment.
       current_node.params.each do |param|
         child_node = current_node.child(key: param)
 
         arg, next_index = capture_arg(arg_start_index: current_index, path:)
         params[param] = arg
 
-        # TODO: This is the end node but we need events for dynamic routes along the way too.
-        route_events << RouteEvent.new(action: :render, route: child_node.route, params:) if child_node.route && path[next_index].nil?
+        if child_node.route
+          # End nodes render events, mid nodes handle events.
+          action = path[next_index].nil? ? :render : :handle
+          route_events << RouteEvent.new(action:, route: child_node.route, params:)
+        end
+
         route_events = [*route_events, *match(path:, current_node:, current_index: next_index, params:)]
       end
 
@@ -66,12 +70,6 @@ module Rain
     end
 
     private
-
-    def next_node(node:, path:)
-      return node if node.route&.path == path
-
-      node.nodes
-    end
 
     def capture_param(current_index:, path:)
       current_index += 1
