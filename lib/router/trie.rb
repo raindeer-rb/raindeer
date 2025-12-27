@@ -55,7 +55,7 @@ module Rain
         child_node = current_node.child(key: param)
 
         arg, next_index = capture_arg(arg_start_index: current_index, path:)
-        params[param] = arg
+        params[param.delete_prefix(':').to_sym] = arg
 
         if child_node.route
           # End nodes render events, mid nodes handle events.
