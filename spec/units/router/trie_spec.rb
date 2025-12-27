@@ -54,23 +54,23 @@ module Rain
           expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
           expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users/:id')
         end
-      end
 
-      context 'when multiple routes overlap' do
-        before do
-          trie.merge(route: Route.new(path: '/users'))
-          trie.merge(route: Route.new(path: '/users/:id'))
-        end
+        context 'with overlapping routes' do
+          before do
+            trie.merge(route: Route.new(path: '/users'))
+            trie.merge(route: Route.new(path: '/users/:id'))
+          end
 
-        it 'creates multiple route events' do
-          expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
-          expect(trie.match(path: '/users/1')[0].route).to have_attributes(path: '/users')
-          expect(trie.match(path: '/users/1')[1].route).to have_attributes(path: '/users/:id')
-        end
+          it 'creates multiple route events' do
+            expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
+            expect(trie.match(path: '/users/1')[0].route).to have_attributes(path: '/users')
+            expect(trie.match(path: '/users/1')[1].route).to have_attributes(path: '/users/:id')
+          end
 
-        it 'sets the event action for the route end node to #render' do
-          expect(trie.match(path: '/users/1')[0]).to have_attributes(action: :handle) # /users
-          expect(trie.match(path: '/users/1')[1]).to have_attributes(action: :render) # /users/:id
+          it "sets the end node's event action to #render" do
+            expect(trie.match(path: '/users/1').first).to have_attributes(action: :handle) # /users
+            expect(trie.match(path: '/users/1').last).to have_attributes(action: :render) # /users/:id
+          end
         end
       end
     end
