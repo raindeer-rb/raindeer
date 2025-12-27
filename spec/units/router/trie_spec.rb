@@ -38,7 +38,7 @@ module Rain
     end
 
     describe '#match' do
-      context 'when route is static' do
+      context 'with a static route' do
         it 'creates a route event' do
           trie.merge(route: Route.new(path: '/users'))
 
@@ -47,12 +47,23 @@ module Rain
         end
       end
 
-      context 'when route is dynamic' do
+      context 'with a static/dynamic route' do
         it 'creates a route event' do
           trie.merge(route: Route.new(path: '/users/:id'))
 
           expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
           expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users/:id')
+        end
+      end
+
+      context 'with a dynamic route' do
+        context 'when single level' do
+          it 'creates a route event' do
+            trie.merge(route: Route.new(path: '/:user_id'))
+
+            expect(trie.match(path: '/username').first.route).to have_attributes(path: '/:user_id')
+            expect(trie.match(path: '/username').first.params).to eq(user_id: 'username')
+          end
         end
       end
 
