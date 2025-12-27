@@ -46,12 +46,7 @@ module Rain
 
       # Static request path segment.
       if (child_node = current_node.child(key:))
-        if child_node.route
-          # End nodes render events, mid nodes handle events.
-          action = path[current_index + 1].nil? ? :render : :handle
-          route_events << RouteEvent.new(action:, route: child_node.route, params:)
-        end
-
+        route_events << route_event(next_index: current_index + 1, params:, path:, route: child_node.route) if child_node.route
         route_events = [*route_events, *match(path:, current_node: child_node, current_index: current_index + 1, params:)]
       end
 
@@ -62,12 +57,7 @@ module Rain
         arg, next_index = capture_arg(arg_start_index: current_index, path:)
         params[param.delete_prefix(':').to_sym] = arg
 
-        if child_node.route
-          # End nodes render events, mid nodes handle events.
-          action = path[next_index].nil? ? :render : :handle
-          route_events << RouteEvent.new(action:, route: child_node.route, params:)
-        end
-
+        route_events << route_event(next_index:, params:, path:, route: child_node.route) if child_node.route
         route_events = [*route_events, *match(path:, current_node: child_node, current_index: next_index, params:)]
       end
 
@@ -75,6 +65,12 @@ module Rain
     end
 
     private
+
+    # End nodes render events, mid nodes handle events.
+    def route_event(next_index:, params:, path:, route:)
+      action = path[next_index].nil? ? :render : :handle
+      RouteEvent.new(action:, route:, params:)
+    end
 
     def capture_param(current_index:, path:)
       current_index += 1
