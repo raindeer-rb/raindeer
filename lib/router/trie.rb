@@ -46,7 +46,12 @@ module Rain
 
       # Static request path segment.
       if (child_node = current_node.child(key:))
-        route_events << RouteEvent.new(route: child_node.route, params:) if child_node.route
+        if child_node.route
+          # End nodes render events, mid nodes handle events.
+          action = path[current_index + 1].nil? ? :render : :handle
+          route_events << RouteEvent.new(action:, route: child_node.route, params:)
+        end
+
         route_events = [*route_events, *match(path:, current_node: child_node, current_index: current_index + 1, params:)]
       end
 
