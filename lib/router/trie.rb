@@ -63,7 +63,7 @@ module Rain
           route_events << RouteEvent.new(action:, route: child_node.route, params:)
         end
 
-        route_events = [*route_events, *match(path:, current_node:, current_index: next_index, params:)]
+        route_events = [*route_events, *match(path:, current_node: child_node, current_index: next_index, params:)]
       end
 
       route_events

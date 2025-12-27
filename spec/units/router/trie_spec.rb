@@ -65,6 +65,15 @@ module Rain
             expect(trie.match(path: '/username').first.params).to eq(user_id: 'username')
           end
         end
+
+        context 'when double level' do
+          it 'creates a route event' do
+            trie.merge(route: Route.new(path: '/:user_id/:post_id'))
+
+            expect(trie.match(path: '/username/123').first.route).to have_attributes(path: '/:user_id/:post_id')
+            expect(trie.match(path: '/username/123').first.params).to eq(user_id: 'username', post_id: '123')
+          end
+        end
       end
 
       context 'with overlapping routes' do
