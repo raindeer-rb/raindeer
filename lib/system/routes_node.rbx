@@ -22,9 +22,9 @@ class RoutesNode < LowNode
         <tbody>
           <{ for: path, route in: @routes }>
             <tr>
-              <td>{path}</td>
-              <td>{route}</td>
-              <td>3</td>
+              <td><{ LabelFormatter labels=route.verbs }></td>
+              <td>{route.path}</td>
+              <td></td>
             </tr>
           <{ :for }>
         </tbody>
