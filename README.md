@@ -73,10 +73,6 @@ Developers will use patterns applicable to their application that are different 
   | Less isolation between concerns | With extra effort we can still isolate these "mixed" concerns internally             |
 </details>
 
-### 🌲 Living framework
-
-An application is a living organism and so is the framework below it. Raindeer does dynamic processing of previously static elements; from type checking and [expressions](https://github.com/raindeer-rb/expressions) to parallelization of nodes. This is okay, the framework should do more and feel alive. That being said, dynamic doesn't mean "magic"...
-
 ### 🪆 Composition over convention
 
 Methods and classes should be *compositional*, so that you can understand their hidden complexity by drilling down into them as they go, rather than calling one magic method that does a bunch of side quests. APIs should be less magical and more compositional.
