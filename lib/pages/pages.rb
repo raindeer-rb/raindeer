@@ -74,7 +74,7 @@ module Rain
 
     def folders(file_path:)
       File.dirname(file_path)
-        .split(Regexp.union(['/', '-']))
+        .split(Regexp.union(['/', '&', '-']))
         .filter { it.start_with?('_') }
         .map { it.delete_prefix('_') }
         .filter { !number?(it) }
@@ -82,7 +82,7 @@ module Rain
 
     def order(file_path)
       file_path
-        .split(Regexp.union(['/', '-']))
+        .split(Regexp.union(['/', '&', '-']))
         .filter { it.start_with?('_') }
         .map { it.delete_prefix('_') }
         .filter { number?(it) }
@@ -116,10 +116,10 @@ module Rain
     end
 
     class << self
-      # Remove segments beginning with "_" and ending with "/" or "-".
+      # Remove segments beginning with "_" and ending with "&", "-" or "/".
       # Example: app/pages/docs/_basics/_1-getting-started.md => app/pages/docs/getting-started.md
       def url_path(file_path:)
-        url_path = file_path.split('/').map do |segment|
+        url_path = file_path.split(Regexp.union(['/', '&'])).map do |segment|
           next segment.sub(/^_\d\W/, '') if segment.sub(/^_\d\W/, '') != segment
           next nil if segment.sub(/^_/, '') != segment
 
