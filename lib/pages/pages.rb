@@ -29,7 +29,8 @@ module Rain
       Page.new(metadata, raindown)
     end
 
-    def list(file_paths:)
+    def list(**typed_tags)
+      file_paths = tagged(**typed_tags)
       sorted_paths = file_paths.sort_by { order(it) }
 
       sorted_paths.map do |file_path|
@@ -40,13 +41,13 @@ module Rain
     end
 
     def tagged(**typed_tags)
-      results = []
+      file_paths = []
 
       typed_tags.each do |type, tag|
-        results = [*results, *@tags.dig(type, tag)]
+        file_paths = [*file_paths, *@tags.dig(type, tag)]
       end
 
-      results
+      file_paths
     end
 
     private
