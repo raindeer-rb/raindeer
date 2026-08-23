@@ -20,8 +20,7 @@ module Rain
 
     def page(path:)
       path = '/home' if path == '/'
-      url_path = File.expand_path("app/pages#{path}", Dir.pwd)
-      file_path = @url_paths[url_path] || return
+      file_path = @url_paths[path] || return
 
       metadata, markdown = parse_file(file_path:)
       raindown = Raindown.render(markdown:)
@@ -32,12 +31,7 @@ module Rain
     def list(**typed_tags)
       file_paths = tagged(**typed_tags)
       sorted_paths = file_paths.sort_by { order(it) }
-
-      sorted_paths.map do |file_path|
-        metadata, markdown = parse_file(file_path:)
-        metadata[:content] = markdown.empty? ? '' : Raindown.render(markdown:)
-        OpenStruct.new(metadata)
-      end
+      sorted_paths.map { |file_path| present_file(file_path:) }
     end
 
     def tagged(**typed_tags)
@@ -93,6 +87,14 @@ module Rain
       !Float(string, exception: false).nil?
     end
 
+    def present_file(file_path:)
+      metadata, markdown = parse_file(file_path:)
+      metadata[:content] = markdown.empty? ? '' : Raindown.render(markdown:)
+      metadata[:path] = Pages.url_path(file_path:)
+
+      OpenStruct.new(metadata)
+    end
+
     def parse_file(file_path:, parse_content: true)
       dash_lines = []
       data_lines = []
@@ -126,7 +128,11 @@ module Rain
           segment
         end.compact.join('/')
 
-        url_path.delete_suffix(File.extname(url_path))
+        url_path.delete_prefix(pages_path).delete_suffix(File.extname(url_path))
+      end
+
+      def pages_path
+        File.expand_path('app/pages', Dir.pwd)
       end
     end
   end

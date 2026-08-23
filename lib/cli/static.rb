@@ -37,7 +37,7 @@ module Rain
         file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
         url_paths = file_paths.map { |file_path| Rain::Pages.url_path(file_path:) }.compact
         # Skip files that became solely metadata due to underscores hiding the entire file path.
-        url_paths.reject! { |url_path| url_path == "#{application_path}/app/pages" }
+        url_paths.reject! { |url_path| url_path == '' }
 
         tasks = url_paths.map do |file_path|
           Async do
