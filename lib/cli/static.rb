@@ -5,6 +5,7 @@ require 'lowload'
 
 require 'async'
 require 'async/http/internet'
+require 'ruby-progressbar'
 require 'fileutils'
 
 require_relative '../pages/pages'
@@ -18,13 +19,13 @@ module Rain
 
       def build(application_path:)
         metadata = LowLoad.dirload(File.expand_path('app', application_path))
-
         build_path = File.expand_path('build', application_path)
+
         FileUtils.rm_rf(build_path)
         FileUtils.mkdir_p(build_path)
         FileUtils.cp_r(File.expand_path('public', application_path), File.expand_path('public', build_path))
 
-        request_paths(metadata:, application_path:).each do |request_result|
+        request_results(metadata:, application_path:).each do |request_result|
           folder_path = File.join(build_path, request_result.path)
 
           puts "#{folder_path} => #{request_result.status}"
@@ -36,18 +37,25 @@ module Rain
 
       private
 
-      def request_paths(metadata:, application_path:)
+      def request_results(metadata:, application_path:)
         file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
         paths = file_paths.map { |file_path| Rain::Pages.url_path(file_path:) }.compact
         # Skip files that became solely metadata due to underscores hiding the entire file path.
         paths.reject! { |url_path| url_path == '' }
 
+        progressbar = ProgressBar.create(
+          total: paths.size,
+          format: "\e[0;34m%a |%B| %p%%\e[0m"
+        )
+        lock = Mutex.new
+
         tasks = paths.map do |path|
           Async do
             request_url = URI.join(endpoint, path)
-            response = client.get(request_url)            
+            response = client.get(request_url)
             result = RequestResult.new(path:, status: response.status, html: response.read)
             response.close
+            lock.synchronize { progressbar.increment }
             result
           end
         end

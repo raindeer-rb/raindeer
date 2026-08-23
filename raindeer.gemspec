@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'commonmarker'
   spec.add_dependency 'rouge'
   spec.add_dependency 'nokogiri'
+  spec.add_dependency 'ruby-progressbar'
 
   spec.add_dependency 'low_event', '~> 0.5'
   spec.add_dependency 'lowload', '~> 0.6.2'
