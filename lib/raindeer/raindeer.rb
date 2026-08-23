@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'boot'
-
 module Raindeer
   class << self
     def router(&block)
