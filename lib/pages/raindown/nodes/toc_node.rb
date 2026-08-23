@@ -23,8 +23,8 @@ module Rain
                 "<li class='#{h.name}'><a href='\##{h['id']}'>#{h.text.strip}</a></li>"
               }.join("\n")}
             </ul>
-          </div>
-        </details>
+          </details>
+        </div>
       HTML
     end
 
