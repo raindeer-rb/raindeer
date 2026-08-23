@@ -40,6 +40,7 @@ module Rain
       def request_results(metadata:, application_path:)
         file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
         paths = file_paths.map { |file_path| Rain::Pages.url_path(file_path:) }.compact
+        paths << '/'
         # Skip files that became solely metadata due to underscores hiding the entire file path.
         paths.reject! { |url_path| url_path == '' }
 
