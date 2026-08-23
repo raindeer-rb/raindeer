@@ -14,7 +14,7 @@ module Rain
     module Static
       extend self
 
-      RequestResult = Data.define(:path, :html)
+      RequestResult = Data.define(:path, :status, :html)
 
       def build(application_path:)
         metadata = LowLoad.dirload(File.expand_path('app', application_path))
@@ -24,10 +24,13 @@ module Rain
         FileUtils.mkdir_p(build_path)
         FileUtils.cp_r(File.expand_path('public', application_path), File.expand_path('public', build_path))
 
-        request_paths(metadata:, application_path:).each do |result|
-          path = File.expand_path(result.path, build_path)
-          FileUtils.mkdir_p(path)
-          File.write(File.expand_path('index.html', path), result.html)
+        request_paths(metadata:, application_path:).each do |request_result|
+          folder_path = File.join(build_path, request_result.path)
+
+          puts "#{folder_path} => #{request_result.status}"
+
+          FileUtils.mkdir_p(folder_path)
+          File.write(File.expand_path('index.html', folder_path), request_result.html)
         end
       end
 
@@ -35,20 +38,17 @@ module Rain
 
       def request_paths(metadata:, application_path:)
         file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
-        url_paths = file_paths.map { |file_path| Rain::Pages.url_path(file_path:) }.compact
+        paths = file_paths.map { |file_path| Rain::Pages.url_path(file_path:) }.compact
         # Skip files that became solely metadata due to underscores hiding the entire file path.
-        url_paths.reject! { |url_path| url_path == '' }
+        paths.reject! { |url_path| url_path == '' }
 
-        tasks = url_paths.map do |file_path|
+        tasks = paths.map do |path|
           Async do
-            request_path = request_path(application_path:, file_path:)
-            request_url = endpoint + request_path
-
-            response = client.get(request_url)
-            response_html = response.read
+            request_url = URI.join(endpoint, path)
+            response = client.get(request_url)            
+            result = RequestResult.new(path:, status: response.status, html: response.read)
             response.close
-
-            RequestResult.new(path: request_path, html: response_html)
+            result
           end
         end
 
