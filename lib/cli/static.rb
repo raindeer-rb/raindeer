@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'async'
-require 'async/http/internet'
 require 'ruby-progressbar'
 require 'fileutils'
 
@@ -66,45 +64,14 @@ module Rain
           total: paths.size,
           format: "\e[0;34m%a |%B| %p%%\e[0m"
         )
-        lock = Mutex.new
 
-        tasks = paths.map do |path|
-          Async do
-            request = FakeRequest.new(path:)
-            response = Low::Events::RequestEvent.take(request:).response
-            result = RequestResult.new(path:, status: response.status, html: response.read)
-            response.close
-            lock.synchronize { progressbar.increment }
-            result
-          end
+        paths.map do |path|
+          request = FakeRequest.new(path:)
+          response = Low::Events::RequestEvent.take(request:).response
+          result = RequestResult.new(path:, status: response.status, html: response.read)
+          progressbar.increment
+          result
         end
-
-        tasks.map(&:result)
-      end
-
-      def request_path(application_path:, file_path:)
-        file_path.delete_prefix("#{application_path}/app/pages/")
-      end
-
-      def client
-        Async::HTTP::Internet.new
-      end
-
-      def endpoint
-        "http://#{config.host}:#{config.port}/"
-      end
-
-      def config
-        env = {
-          host: ENV.fetch('RAIN_HOST', nil),
-          port: ENV.fetch('RAIN_PORT', nil),
-          web_root: ENV.fetch('RAIN_WEB_ROOT', nil),
-          debug_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_DEBUG', true)),
-          matrix_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_MATRIX', nil)),
-          mirror_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_MIRROR', nil)),
-        }
-        config_path = File.expand_path('config/config.yaml', Dir.pwd)
-        ConfigLoader.load(config_path, env)
       end
     end
   end
