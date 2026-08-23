@@ -5,7 +5,12 @@ require 'low_type'
 require 'observers'
 require 'providers'
 
-# Allows the CLI to load application code and metadata, but not start a server.
+# The CLI loads user application code and metadata, but doesn't start a server.
+#
+# Flow:
+#   1. bin/rain - Located in raindeer or user application, loads "raindeer/cli" which is available on $PATH.
+#   2. lib/raindeer/cli - Boots up a raindeer/user application, suitable for use by the CLI <- YOU ARE HERE.
+#   3. lib/cli/cli - Defines CLI then responds to the ARGs given to bin/rain.
 
 #################################################
 # FRAMEWORK INTERNAL API
