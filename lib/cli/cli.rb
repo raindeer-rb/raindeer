@@ -7,9 +7,14 @@ module Rain
   module CLI
     extend Trees
 
+    TEMPLATE_URL = 'https://github.com/raindeer-rb/raindeer-template'.freeze
+
     line('new :app_name') do |app_name|
       summary { "Generates a Raindeer application with the specified name." }
-      execute { 'TODO' }
+      execute do
+        system("git clone #{TEMPLATE_URL} #{app_name}")
+        system("cd #{app_name}")
+      end
     end
 
     line('server') do

@@ -91,12 +91,21 @@ end
 
 ## Getting Started
 
-1. Clone [Raindeer Template](https://github.com/raindeer-rb/raindeer-template)
-2. Run `bundle install`
-3. Run `rain server`
-4. Visit http://127.0.0.1:4133/
+**Create your application:**
+```shell
+gem install raindeer
+rain new :app_name
+```
 
-Soon we'll have a `rain new :app_name` generator command. Could that future be you? It's currently [stubbed](https://github.com/raindeer-rb/raindeer/blob/main/lib/cli/cli.rb).
+Or clone the [template](https://github.com/raindeer-rb/raindeer-template).
+
+**Run the server:**
+```shell
+bundle install
+rain server
+```
+
+**Visit:** http://127.0.0.1:4133/
 
 ## Community
 

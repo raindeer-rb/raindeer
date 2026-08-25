@@ -9,8 +9,8 @@ require 'providers'
 #
 # Flow:
 #   1. bin/rain - Located in raindeer or user application, loads "raindeer/cli" which is available on $PATH.
-#   2. lib/raindeer/cli - Boots up a raindeer/user application, suitable for use by the CLI <- YOU ARE HERE.
-#   3. lib/cli/cli - Defines CLI then responds to the ARGs given to bin/rain.
+#   2. lib/raindeer/cli - Boots up a raindeer/user application that is suitable for use by the CLI. <-- YOU ARE HERE
+#   3. lib/cli/cli - Defines and runs the CLI that responds to the ARGs given to bin/rain.
 
 #################################################
 # FRAMEWORK INTERNAL API
