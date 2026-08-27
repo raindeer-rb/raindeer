@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/logo.png" alt="Raindeer logo" height="400"/></p>
+<p align="center"><img src="assets/cover.png" alt="Raindeer"/></p>
 
 # Raindeer
 
