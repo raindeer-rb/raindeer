@@ -6,14 +6,14 @@ require_relative 'elements'
 
 module Rain
   module Raindown
-    extend self
+    module_function
 
     def render(markdown:)
       template = markdown.gsub('<{', '<!-- ANTLERS').gsub('}>', 'ANTLERS -->')
 
       doc = Commonmarker.parse(template)
       doc.walk do |node|
-        if node.type == :code || node.type == :code_block
+        if %i[code code_block].include?(node.type)
           node.string_content = node.string_content.gsub('<!-- ANTLERS', '<{').gsub('ANTLERS -->', '}>')
         end
       end

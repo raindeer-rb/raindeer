@@ -74,7 +74,7 @@ RSpec.describe Rain::Router do
         before do
           router.get '/users'
         end
-        
+
         it 'triggers route event on observer' do
           router.handle(event: request_event)
           expect(UsersRouteObserver).to have_received(:render).with({ event: an_instance_of(Rain::RouteEvent) })

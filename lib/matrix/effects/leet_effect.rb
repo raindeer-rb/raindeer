@@ -11,14 +11,14 @@ module Rain
       @leet_letters = @leet_numbers.invert
     end
 
-    def render(output:, next_output:, x:, y:)
-      output = filter(output:, next_output:, x:, y:)
+    def render(output:, x:, y:, **)
+      output = filter(output:, x:, y:, **)
       save(output:, x:, y:)
     end
 
     private
 
-    def filter(output:, next_output:, x:, y:)
+    def filter(output:, x:, y:, **)
       return unless output
 
       character = output.downcase
@@ -26,7 +26,7 @@ module Rain
 
       return @leet_numbers[character] if @leet_letters.key?(last_character) && rand < 0.99
       return @leet_numbers[character] if @leet_numbers.key?(character) && rand < 0.005
-        
+
       output
     end
   end

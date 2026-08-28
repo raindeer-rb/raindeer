@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # Call "rain" to access the CLI loaded on your $PATH by Bundler.
 # Uncomment the line below and call "bin/rain" to load local gems from your Gemfile in development.

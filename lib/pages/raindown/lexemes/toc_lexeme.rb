@@ -5,7 +5,8 @@ require 'interfaces/lexeme' # From antlers gem, too generic.
 module Rain
   module TOCLexeme
     include Antlers::Lexeme
-    extend self
+
+    module_function
 
     KEYWORDS = [':toc'].freeze
 

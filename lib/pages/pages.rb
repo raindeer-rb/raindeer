@@ -56,7 +56,7 @@ module Rain
         metadata, * = parse_file(file_path:, parse_content: false)
         metadata.each do |type, tag|
           tag(type:, tag:, file_path:)
-        end        
+        end
       end
     end
 
@@ -68,10 +68,10 @@ module Rain
 
     def folders(file_path:)
       File.dirname(file_path)
-        .split(Regexp.union(['/', '&', '-']))
-        .filter { it.start_with?('_') }
-        .map { it.delete_prefix('_') }
-        .filter { !number?(it) }
+          .split(Regexp.union(['/', '&', '-']))
+          .filter { it.start_with?('_') }
+          .map { it.delete_prefix('_') }
+          .filter { !number?(it) }
     end
 
     def order(file_path)
@@ -100,7 +100,7 @@ module Rain
       data_lines = []
       text_lines = []
 
-      File.foreach(file_path).with_index do |line, index|
+      File.foreach(file_path) do |line|
         if line.strip == '---' && dash_lines.count < 2
           dash_lines << line
           next

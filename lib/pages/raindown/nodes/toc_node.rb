@@ -14,14 +14,14 @@ module Rain
     def render(current_binding: nil, parent_binding: nil, slot_node: nil)
       doc = Nokogiri::HTML(@template)
 
-      output = <<~HTML
+      <<~HTML
         <div class="floating">
           <details id="toc" open>
             <summary>Table of contents</summary>
             <ul>
-              #{doc.css('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').map { |h|
+              #{doc.css('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').map do |h|
                 "<li class='#{h.name}'><a href='\##{h['id']}'>#{h.text.strip}</a></li>"
-              }.join("\n")}
+              end.join("\n")}
             </ul>
           </details>
         </div>

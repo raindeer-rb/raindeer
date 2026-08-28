@@ -16,6 +16,9 @@ Metrics/PerceivedComplexity:
 Metrics/CyclomaticComplexity:
   Max: 10
 
+Naming/MethodParameterName:
+  Enabled: false
+
 # Disable "Use value.positive? instead of value > 0".
 Style/NumericPredicate:
   Enabled: false

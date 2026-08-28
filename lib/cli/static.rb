@@ -28,7 +28,7 @@ module Rain
           observers << Providers['rain.router']
         end
 
-        request_results(metadata:, application_path:).each do |request_result|
+        request_results(metadata:).each do |request_result|
           folder_path = File.join(build_path, request_result.path)
 
           puts "#{folder_path} => #{request_result.status}"
@@ -53,14 +53,14 @@ module Rain
         metadata
       end
 
-      def request_results(metadata:, application_path:)
+      def request_results(metadata:)
         file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
         paths = file_paths.map { |file_path| Rain::Pages.url_path(file_path:) }.compact
         paths << '/'
         # Skip files that became solely metadata due to underscores hiding the entire file path.
         paths.reject! { |url_path| url_path == '' }
 
-        progressbar = ProgressBar.create(
+        progress_bar = ProgressBar.create(
           total: paths.size,
           format: "\e[0;34m%a |%B| %p%%\e[0m"
         )
@@ -69,7 +69,7 @@ module Rain
           request = FakeRequest.new(path:)
           response = Low::Events::RequestEvent.take(request:).response
           result = RequestResult.new(path:, status: response.status, html: response.read)
-          progressbar.increment
+          progress_bar.increment
           result
         end
       end

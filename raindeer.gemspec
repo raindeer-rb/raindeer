@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
 
   spec.summary = "An event-driven and compositional web framework that's easy to use. Deer to be different."
   spec.description = <<~TEXT
-    Raindeer is an event-driven framework using the dynamic features and latest async improvements in Ruby + some weird ideas, 
-    to build a new breed of web application. Each Raindeer component can be used individually in your exisiting application, 
+    Raindeer is an event-driven framework using the dynamic features and latest async improvements in Ruby + some weird ideas,#{' '}
+    to build a new breed of web application. Each Raindeer component can be used individually in your exisiting application,#{' '}
     or all together as a cohesive framework. Deer to be different.
   TEXT
 
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/raindeer-rb/raindeer'
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/raindeer-rb/raindeer/src/branch/main'
-  spec.metadata["mailing_list_uri"]   = "https://www.rubyforum.org/tag/raindeer"
+  spec.metadata['mailing_list_uri'] = 'https://www.rubyforum.org/tag/raindeer'
 
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
@@ -30,11 +30,11 @@ Gem::Specification.new do |spec|
   spec.bindir = 'bin'
   spec.executables = ['rain']
 
+  spec.add_dependency 'commonmarker'
+  spec.add_dependency 'nokogiri'
   spec.add_dependency 'ostruct'
   spec.add_dependency 'paint'
-  spec.add_dependency 'commonmarker'
   spec.add_dependency 'rouge'
-  spec.add_dependency 'nokogiri'
   spec.add_dependency 'ruby-progressbar'
 
   spec.add_dependency 'low_event', '~> 0.5'

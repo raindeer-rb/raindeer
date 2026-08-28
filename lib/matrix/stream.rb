@@ -75,8 +75,8 @@ module Rain
     # └─────┴─────┴─────┘
     def render(duration: nil)
       @show_cursor.increment(delays:, inputs:, duration:) do |index|
-        prev_index = index.zero? ? @inputs.count - 1 : index - 1
-        next_index = index + 1 >= @inputs.count ? 0 : index + 1
+        index.zero? ? @inputs.count - 1 : index - 1
+        index + 1 >= @inputs.count ? 0 : index + 1
 
         if @inputs[index]
           @outputs[index] = @inputs[index]
