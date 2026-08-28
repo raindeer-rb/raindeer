@@ -49,4 +49,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'observers'
   spec.add_dependency 'plugs'
   spec.add_dependency 'providers'
+  spec.add_dependency 'trees'
 end
