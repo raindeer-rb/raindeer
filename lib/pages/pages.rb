@@ -100,7 +100,7 @@ module Rain
       data_lines = []
       text_lines = []
 
-      File.foreach(file_path) do |line|
+      File.foreach(file_path, 'r:UTF-8') do |line|
         if line.strip == '---' && dash_lines.count < 2
           dash_lines << line
           next
