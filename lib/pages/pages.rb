@@ -100,7 +100,9 @@ module Rain
       data_lines = []
       text_lines = []
 
-      File.foreach(file_path, 'r:UTF-8') do |line|
+      File.foreach(file_path) do |line|
+        line.force_encoding('UTF-8')
+
         if line.strip == '---' && dash_lines.count < 2
           dash_lines << line
           next
@@ -114,7 +116,8 @@ module Rain
         text_lines << line
       end
 
-      [YAML.safe_load(data_lines.join, symbolize_names: true), text_lines.join.strip]
+      metadata = YAML.safe_load(data_lines.join, symbolize_names: true) || []
+      [metadata, text_lines.join.strip]
     end
 
     class << self
