@@ -22,7 +22,7 @@ module Rain
 
         FileUtils.rm_rf(build_path)
         FileUtils.mkdir_p(build_path)
-        FileUtils.cp_r(File.expand_path('public', application_path), File.expand_path('public', build_path))
+        FileUtils.cp_r("#{File.expand_path('public', application_path)}/.", build_path)
 
         Low::Events::RequestEvent.define do |observers|
           observers << Providers['rain.router']
