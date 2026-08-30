@@ -11,6 +11,7 @@ module Rain
     Page = Struct.new(:metadata, :html)
 
     def initialize(metadata:)
+      @metadata = metadata
       @file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
       @url_paths = {}
       @tags = {}
@@ -23,7 +24,7 @@ module Rain
       file_path = @url_paths[path] || return
 
       metadata, markdown = parse_file(file_path:)
-      raindown = Raindown.render(markdown:, metadata:)
+      raindown = Raindown.render(markdown:, metadata: self)
 
       Page.new(metadata, raindown)
     end

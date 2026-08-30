@@ -17,5 +17,17 @@ module Rain
         TOCNode
       end
     end
+
+    plug(:list) do
+      plug(:lexeme) do
+        require_relative 'lexemes/list_lexeme'
+        ListLexeme
+      end
+
+      plug(:node) do
+        require_relative 'nodes/list_node'
+        ListNode
+      end
+    end
   end
 end
