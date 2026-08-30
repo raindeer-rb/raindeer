@@ -50,7 +50,7 @@ PATH
   remote: .
   specs:
     raindeer (0.9.12)
-      antlers
+      antlers (~> 1.0)
       commonmarker
       expressions
       low_event (~> 0.5)
