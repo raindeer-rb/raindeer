@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'commonmarker'
-require 'antlers/elements'
+require 'antlers/api'
 require_relative 'elements'
 
 module Rain

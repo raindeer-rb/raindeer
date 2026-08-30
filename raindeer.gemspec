@@ -44,7 +44,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'low_state'
   spec.add_dependency 'low_type', '~> 1.0'
 
-  spec.add_dependency 'antlers'
+  spec.add_dependency 'antlers', '~> 1.0'
   spec.add_dependency 'expressions'
   spec.add_dependency 'observers'
   spec.add_dependency 'plugs'
