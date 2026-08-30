@@ -11,7 +11,7 @@ module Rain
     def render(markdown:, metadata: {})
       template = markdown.gsub('<{', '<!-- ANTLERS').gsub('}>', 'ANTLERS -->')
 
-      doc = Commonmarker.parse(template.force_encoding('UTF-8'), options: { extension: { alerts: true }})
+      doc = Commonmarker.parse(template.force_encoding('UTF-8'), options: { extension: { alerts: true } })
       doc.walk do |node|
         if %i[code code_block].include?(node.type)
           node.string_content = node.string_content.gsub('<!-- ANTLERS', '<{').gsub('ANTLERS -->', '}>')
@@ -23,7 +23,7 @@ module Rain
 
       return template unless template.include?('<{') || template.include?('{')
 
-      ast = Antlers.ast(template:, elements: Antlers::Elements[:html, :prop] + Rain::Elements[:toc])
+      ast = Antlers.ast(template:, elements: Antlers::Elements[:html, :var, :prop] + Rain::Elements[:toc, :list])
 
       Antlers.render(ast:, current_binding: binding, metadata:)
     end
