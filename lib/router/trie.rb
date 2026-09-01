@@ -10,6 +10,12 @@ module Rain
 
     PARAM_DELIMITERS = ['/', ':'].freeze
     ARG_DELIMITERS = ['/'].freeze
+    # Delimiters for STATIC segments only -- capture_arg (dynamic param values) is untouched,
+    # so a kebab-case value like "hello-world" still matches a :slug param as one whole piece.
+    SEGMENT_DELIMITER_PATTERN = %r{[/\-:]}
+    # The subset of segment delimiters that are single-character segments in their own right
+    # (as opposed to ':', which introduces a multi-character param name via capture_param).
+    SINGLE_CHAR_SEGMENTS = ['/', '-'].freeze
 
     attr_reader :root_node
 
@@ -25,13 +31,14 @@ module Rain
       path = route.path
 
       while current_index < path.length
-        key = path[current_index]
+        char = path[current_index]
 
-        if key == ':'
-          key, current_index = capture_param(current_index:, path:)
-        else
-          current_index += 1
-        end
+        key, current_index =
+          if char == ':'
+            capture_param(current_index:, path:)
+          else
+            static_segment(current_index:, path:)
+          end
 
         current_node = current_node.upsert_child(key:)
       end
@@ -50,12 +57,13 @@ module Rain
     # Appends to the shared route_events accumulator instead of building and splat-concatenating
     # a new array at every level of recursion -- match() used to be O(path length) array allocations.
     def collect_matches(path:, current_node:, current_index:, params:, route_events:)
-      return if (key = path[current_index]).nil?
+      return if path[current_index].nil?
 
-      # Static request path segment.
-      if (child_node = current_node.child(key:))
-        route_events << route_event(next_index: current_index + 1, params:, path:, route: child_node.route) if child_node.route
-        collect_matches(path:, current_node: child_node, current_index: current_index + 1, params:, route_events:)
+      static_key, static_next_index = static_segment(current_index:, path:)
+
+      if (child_node = current_node.child(key: static_key))
+        route_events << route_event(next_index: static_next_index, params:, path:, route: child_node.route) if child_node.route
+        collect_matches(path:, current_node: child_node, current_index: static_next_index, params:, route_events:)
       end
 
       # Dynamic request path segment.
@@ -101,6 +109,28 @@ module Rain
       end
 
       [arg.join, next_index]
+    end
+
+    # Candidate static key for the request path at current_index, computed with the same
+    # segmentation rule merge() uses to build the trie -- this is what makes matching an exact
+    # whole-segment match rather than a character-prefix match, e.g. a route registered at
+    # "/api" no longer spuriously matches a request for "/apikey".
+    def static_segment(current_index:, path:)
+      char = path[current_index]
+
+      SINGLE_CHAR_SEGMENTS.include?(char) ? [char, current_index + 1] : capture_segment(current_index:, path:)
+    end
+
+    # Captures a whole run of static text as one key, stopping at the next segment delimiter --
+    # only called when the current character is already confirmed not to be one, so this never
+    # returns an empty segment. Unlike capture_param/capture_arg, this scans via String#index
+    # instead of decomposing the remaining path into single-character strings with #chars --
+    # collect_matches calls this at every trie level (including ones with no static child at
+    # all), so a per-character scan here would cost O(remaining path length) allocations per
+    # level instead of O(1).
+    def capture_segment(current_index:, path:)
+      next_index = path.index(SEGMENT_DELIMITER_PATTERN, current_index) || path.length
+      [path[current_index...next_index], next_index]
     end
   end
 end

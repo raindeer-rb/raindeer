@@ -22,18 +22,23 @@ module Rain
         expect(trie.root_path_node.route).to have_attributes(path: '/')
       end
 
-      it 'creates a prefix tree of nodes' do
+      it 'creates a prefix tree of nodes, sharing prefixes split on "/" and "-"' do
         trie.merge(route: Route.new(path: '/users'))
         trie.merge(route: Route.new(path: '/users/:id'))
         trie.merge(route: Route.new(path: '/users/:id/edit'))
+        trie.merge(route: Route.new(path: '/user-profile'))
+        trie.merge(route: Route.new(path: '/user-settings'))
 
-        expect(trie.root_path_node.nodes.keys.first).to eq('u')
-        expect(trie.root_path_node.nodes.values.first.nodes.keys.first).to eq('s')
-        expect(trie.root_path_node.nodes.values.first.nodes.values.first.nodes.keys.first).to eq('e')
+        expect(trie.root_path_node.nodes.keys.first).to eq('users')
+        expect(trie.root_path_node.nodes.values.first.nodes.keys.first).to eq('/')
+        expect(trie.root_path_node.nodes.values.first.nodes.values.first.nodes.keys.first).to eq(':id')
+        expect(trie.root_path_node.nodes['user'].nodes['-'].nodes.keys).to contain_exactly('profile', 'settings')
 
         expect(matching_node(node: trie.root_path_node, path: '/users')).to be_truthy
         expect(matching_node(node: trie.root_path_node, path: '/users/:id')).to be_truthy
         expect(matching_node(node: trie.root_path_node, path: '/users/:id/edit')).to be_truthy
+        expect(matching_node(node: trie.root_path_node, path: '/user-profile')).to be_truthy
+        expect(matching_node(node: trie.root_path_node, path: '/user-settings')).to be_truthy
       end
     end
 
@@ -54,6 +59,16 @@ module Rain
           expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
           expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users/:id')
         end
+      end
+
+      it 'requires an exact segment match and keeps hyphenated dynamic values intact' do
+        trie.merge(route: Route.new(path: '/api'))
+        trie.merge(route: Route.new(path: '/user-profile'))
+        trie.merge(route: Route.new(path: '/posts/:slug'))
+
+        expect(trie.match(path: '/apikey')).to eq([])
+        expect(trie.match(path: '/user-profile').first.route).to have_attributes(path: '/user-profile')
+        expect(trie.match(path: '/posts/hello-world').first.params).to eq(slug: 'hello-world')
       end
 
       context 'with a dynamic route' do
