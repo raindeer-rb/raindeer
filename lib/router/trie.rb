@@ -40,14 +40,22 @@ module Rain
     end
 
     def match(path:, current_node: @root_node, current_index: 0, params: {})
-      return [] if (key = path[current_index]).nil?
-
       route_events = []
+      collect_matches(path:, current_node:, current_index:, params:, route_events:)
+      route_events
+    end
+
+    private
+
+    # Appends to the shared route_events accumulator instead of building and splat-concatenating
+    # a new array at every level of recursion -- match() used to be O(path length) array allocations.
+    def collect_matches(path:, current_node:, current_index:, params:, route_events:)
+      return if (key = path[current_index]).nil?
 
       # Static request path segment.
       if (child_node = current_node.child(key:))
         route_events << route_event(next_index: current_index + 1, params:, path:, route: child_node.route) if child_node.route
-        route_events = [*route_events, *match(path:, current_node: child_node, current_index: current_index + 1, params:)]
+        collect_matches(path:, current_node: child_node, current_index: current_index + 1, params:, route_events:)
       end
 
       # Dynamic request path segment.
@@ -58,13 +66,9 @@ module Rain
         params[param.delete_prefix(':').to_sym] = arg
 
         route_events << route_event(next_index:, params:, path:, route: child_node.route) if child_node.route
-        route_events = [*route_events, *match(path:, current_node: child_node, current_index: next_index, params:)]
+        collect_matches(path:, current_node: child_node, current_index: next_index, params:, route_events:)
       end
-
-      route_events
     end
-
-    private
 
     # Mid nodes handle events, end nodes render events.
     def route_event(next_index:, params:, path:, route:)
