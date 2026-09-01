@@ -8,10 +8,11 @@ module Rain
   class Trie
     include LowType
 
-    PARAM_DELIMITERS = ['/', ':'].freeze
-    ARG_DELIMITERS = ['/'].freeze
-    # Delimiters for STATIC segments only -- capture_arg (dynamic param values) is untouched,
-    # so a kebab-case value like "hello-world" still matches a :slug param as one whole piece.
+    PARAM_DELIMITER_PATTERN = %r{[/:]}
+    ARG_DELIMITER = '/'
+    # Delimiters for STATIC segments only -- capture_arg's delimiter (dynamic param values) is
+    # unaffected, so a kebab-case value like "hello-world" still matches a :slug param as one
+    # whole piece.
     SEGMENT_DELIMITER_PATTERN = %r{[/\-:]}
     # The subset of segment delimiters that are single-character segments in their own right
     # (as opposed to ':', which introduces a multi-character param name via capture_param).
@@ -84,31 +85,19 @@ module Rain
       RouteEvent.new(action:, route:, params:)
     end
 
+    # Scans via String#index instead of decomposing the remaining path into single-character
+    # strings with #chars -- same reasoning as capture_segment.
     def capture_param(current_index:, path:)
       current_index += 1
-      param = [':']
+      next_index = path.index(PARAM_DELIMITER_PATTERN, current_index) || path.length
 
-      path[current_index...path.length].chars.each do |char|
-        break if PARAM_DELIMITERS.include?(char)
-
-        current_index += 1
-        param << char
-      end
-
-      [param.join, current_index]
+      [":#{path[current_index...next_index]}", next_index]
     end
 
     def capture_arg(arg_start_index:, path:)
-      next_index = arg_start_index
-      arg = []
+      next_index = path.index(ARG_DELIMITER, arg_start_index) || path.length
 
-      path[arg_start_index...path.length].chars.each do |char|
-        arg << char
-        next_index += 1
-        break if path[next_index].nil? || ARG_DELIMITERS.include?(path[next_index])
-      end
-
-      [arg.join, next_index]
+      [path[arg_start_index...next_index], next_index]
     end
 
     # Candidate static key for the request path at current_index, computed with the same
@@ -123,11 +112,7 @@ module Rain
 
     # Captures a whole run of static text as one key, stopping at the next segment delimiter --
     # only called when the current character is already confirmed not to be one, so this never
-    # returns an empty segment. Unlike capture_param/capture_arg, this scans via String#index
-    # instead of decomposing the remaining path into single-character strings with #chars --
-    # collect_matches calls this at every trie level (including ones with no static child at
-    # all), so a per-character scan here would cost O(remaining path length) allocations per
-    # level instead of O(1).
+    # returns an empty segment.
     def capture_segment(current_index:, path:)
       next_index = path.index(SEGMENT_DELIMITER_PATTERN, current_index) || path.length
       [path[current_index...next_index], next_index]
