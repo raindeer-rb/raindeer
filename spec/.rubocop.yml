@@ -3,5 +3,8 @@ inherit_from: ../.rubocop.yml
 Metrics/BlockLength:
   Max: 500
 
+Metrics/ModuleLength:
+  Max: 150
+
 Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: false
