@@ -7,6 +7,7 @@ module System
     def initialize(event:)
       # TODO: Include types that can be observed keys too like Status and Status[404].
       @event_types = LowEvent.events
+      @event_trees = Providers['low.event.pool'].event_trees.values.reverse
     end
 
     def render(event:)
@@ -31,6 +32,12 @@ module System
             <{ :for }>
           </tbody>
         </table>
+
+        <h2>{"Recent Requests"}</h2>
+
+        <{ for: event_tree in: @event_trees }>
+          <{ EventTraceFormatter event_tree=event_tree }>
+        <{ :for }>
       <{ :LayoutNode }>
     end
   end
