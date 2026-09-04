@@ -45,6 +45,7 @@ end
 # FRAMEWORK EXTERNAL API
 #################################################
 
+require_relative 'integrations'
 require_relative 'raindeer'
 
 #################################################

@@ -3,8 +3,11 @@
 require 'observers'
 require 'low_event'
 
+require_relative '../../../lib/router/http'
 require_relative '../../../lib/router/router'
 require_relative '../../factories/request_factory'
+
+include Rain::HTTP
 
 RSpec.describe Rain::Router do
   subject(:router) { described_class.new }
@@ -14,19 +17,38 @@ RSpec.describe Rain::Router do
   end
 
   describe '#route' do
-    it 'creates wildcard route' do
-      router.get '*'
+    context 'with path' do
+      it 'creates wildcard route' do
+        router.route '/*'
 
-      expect(router.routes['*']).to have_attributes(path: '*', verbs: ['GET'])
-    end
-
-    it 'creates combinatorial routes' do
-      router.get '/users' do
-        router.get '/:id'
+        expect(router.routes['/*']).to have_attributes(path: '/*', verbs: Rain::HTTP::VERBS)
       end
 
-      expect(router.routes['/users']).to have_attributes(path: '/users', verbs: ['GET'])
-      expect(router.routes['/users/:id']).to have_attributes(path: '/users/:id', verbs: ['GET'])
+      it 'creates combinatorial routes' do
+        router.route '/users' do
+          router.route '/:id'
+        end
+
+        expect(router.routes['/users']).to have_attributes(path: '/users', verbs: Rain::HTTP::VERBS)
+        expect(router.routes['/users/:id']).to have_attributes(path: '/users/:id', verbs: Rain::HTTP::VERBS)
+      end
+    end
+
+    context 'with verb => path' do
+      it 'creates GET wildcard route' do
+        router.route GET => '/*'
+
+        expect(router.routes['/*']).to have_attributes(path: '/*', verbs: [:get])
+      end
+
+      it 'creates GET/POST combinatorial routes without mixing up HTTP Verbs' do
+        router.route [GET, POST] => '/users' do
+          router.route GET => '/:id'
+        end
+
+        expect(router.routes['/users']).to have_attributes(path: '/users', verbs: [:get, :post])
+        expect(router.routes['/users/:id']).to have_attributes(path: '/users/:id', verbs: [:get])
+      end
     end
   end
 
@@ -37,22 +59,22 @@ RSpec.describe Rain::Router do
       let(:request) { Low::Support::RequestFactory.request(path: '/anything') }
 
       before do
-        router.get '/*'
+        router.route '/*'
       end
 
       context 'with "/*" observer' do
         before do
-          class WildcardRouteObserver
+          class WildcardObserver
             include Observers
             observe '/*'
           end
 
-          allow(WildcardRouteObserver).to receive(:render).and_return('mock response')
+          allow(WildcardObserver).to receive(:render).and_return('mock response')
         end
 
         it 'triggers route event on observer' do
           expect(router.handle(event: request_event)).to be('mock response')
-          expect(WildcardRouteObserver).to have_received(:render).with({ event: an_instance_of(Rain::WildcardEvent) })
+          expect(WildcardObserver).to have_received(:render).with({ event: an_instance_of(Rain::WildcardEvent) })
         end
       end
     end
@@ -72,7 +94,7 @@ RSpec.describe Rain::Router do
 
       context 'with "/users" route' do
         before do
-          router.get '/users'
+          router.route '/users'
         end
 
         it 'triggers route event on observer' do
