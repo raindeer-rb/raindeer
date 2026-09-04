@@ -52,7 +52,7 @@ RSpec.describe Rain::Router do
 
         it 'triggers route event on observer' do
           expect(router.handle(event: request_event)).to be('mock response')
-          expect(WildcardRouteObserver).to have_received(:render).with({ event: an_instance_of(Rain::WildcardRouteEvent) })
+          expect(WildcardRouteObserver).to have_received(:render).with({ event: an_instance_of(Rain::WildcardEvent) })
         end
       end
     end

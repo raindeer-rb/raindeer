@@ -6,7 +6,7 @@ require 'providers'
 require_relative 'route'
 require_relative 'route_event'
 require_relative 'trie'
-require_relative 'wildcard_route_event'
+require_relative 'wildcard_event'
 
 module Rain
   class Router
@@ -63,7 +63,7 @@ module Rain
 
       if @routes['/*']
         route = Route.new(path: event.request.path, verbs: @routes['/*'].verbs)
-        wildcard_event = WildcardRouteEvent.trigger(key: '/*', action: :render, route:)
+        wildcard_event = WildcardEvent.trigger(key: '/*', action: :render, route:)
         return wildcard_event if wildcard_event
       end
 
