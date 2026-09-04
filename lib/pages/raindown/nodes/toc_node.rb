@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'antlers'
+require 'antlers/api'
 require 'nokogiri'
 
 module Rain

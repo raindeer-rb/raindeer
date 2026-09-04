@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'interfaces/lexeme' # From antlers gem, too generic.
+require 'antlers/api'
 
 module Rain
   module TOCLexeme
