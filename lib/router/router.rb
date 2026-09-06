@@ -3,10 +3,10 @@
 require 'low_event'
 require 'providers'
 
+require_relative 'events/route_event'
+require_relative 'events/wildcard_event'
 require_relative 'route'
-require_relative 'route_event'
 require_relative 'trie'
-require_relative 'wildcard_event'
 
 module Rain
   class Router
@@ -16,43 +16,27 @@ module Rain
     attr_reader :routes, :trie
 
     def initialize
-      @breadcrumbs = []
+      @current_level = []
       @routes = {}
       @trie = Trie.new
     end
 
-    def route(path, verbs = [], &block)
-      @breadcrumbs << path
-      path = @breadcrumbs.join
+    def route(value, &block)
+      path, verbs = Route.decode(value:)
 
-      route = Route.new(path:, verbs: [*verbs])
+      @current_level << path
+      path = @current_level.join
+
+      route = Route.new(path:, verbs:)
       @routes[path] = route
       @trie.merge(route:)
 
       block.call if block_given?
 
-      @breadcrumbs.pop
+      @current_level.pop
     end
 
-    def get(path, &block)
-      route(path, 'GET', &block)
-    end
-
-    def post(path, &block)
-      route(path, 'POST', &block)
-    end
-
-    def update(path, &block)
-      route(path, 'UPDATE', &block)
-    end
-
-    def delete(path, &block)
-      route(path, 'DELETE', &block)
-    end
-
-    # TODO: Define type: ::Low::Events::RequestEvent
-    # You can override any route/status simply by adding your own observer.
-    def handle(event:)
+    def route_request(event: Low::Events::RequestEvent)
       response_event = nil
 
       # The last route event will render a response event which we want to return to the request event.
