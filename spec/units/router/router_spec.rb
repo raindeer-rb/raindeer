@@ -52,7 +52,7 @@ RSpec.describe Rain::Router do
     end
   end
 
-  describe '#handle' do
+  describe '#route_request' do
     let(:request_event) { Low::Events::RequestEvent.new(request:) }
 
     context 'with "/*" route' do
@@ -72,8 +72,8 @@ RSpec.describe Rain::Router do
           allow(WildcardObserver).to receive(:render).and_return('mock response')
         end
 
-        it 'triggers route event on observer' do
-          expect(router.handle(event: request_event)).to be('mock response')
+        it 'triggers wildcard event on observer' do
+          expect(router.route_request(event: request_event)).to be('mock response')
           expect(WildcardObserver).to have_received(:render).with({ event: an_instance_of(Rain::WildcardEvent) })
         end
       end
@@ -98,7 +98,7 @@ RSpec.describe Rain::Router do
         end
 
         it 'triggers route event on observer' do
-          router.handle(event: request_event)
+          router.route_request(event: request_event)
           expect(UsersRouteObserver).to have_received(:render).with({ event: an_instance_of(Rain::RouteEvent) })
         end
       end
@@ -107,7 +107,7 @@ RSpec.describe Rain::Router do
         let(:request) { Low::Support::RequestFactory.request(path: '/missing-path') }
 
         it 'triggers status event on observer' do
-          router.handle(event: request_event)
+          router.route_request(event: request_event)
           expect(UsersRouteObserver).to have_received(:render).with({ event: an_instance_of(Low::Events::StatusEvent) })
         end
       end

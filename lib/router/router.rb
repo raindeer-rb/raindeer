@@ -36,7 +36,7 @@ module Rain
       @current_level.pop
     end
 
-    def handle(event: Low::Events::RequestEvent)
+    def route_request(event: Low::Events::RequestEvent)
       response_event = nil
 
       # The last route event will render a response event which we want to return to the request event.
