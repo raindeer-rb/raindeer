@@ -9,9 +9,12 @@ require_relative 'route'
 require_relative 'trie'
 
 module Rain
+  # Defines routes and routes requests to a matching route event.
   class Router
     include LowType
     include Observers
+    include Low::Events
+    include Low::Types
 
     attr_reader :routes, :trie
 
@@ -36,7 +39,7 @@ module Rain
       @current_level.pop
     end
 
-    def handle(event: Low::Events::RequestEvent)
+    def request(event: RequestEvent)
       response_event = nil
 
       # The last route event will render a response event which we want to return to the request event.
