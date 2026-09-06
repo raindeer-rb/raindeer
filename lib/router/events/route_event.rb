@@ -7,6 +7,9 @@ module Rain
     attr_reader :route, :params
 
     def initialize(route:, action: :render, params: Hash | nil)
+      action = [:render, :get, :delete] if action == :render
+      action = [:receive, :query, :post, :put, :patch] if action == :receive
+
       super(key: route.path, action:)
 
       @route = route
