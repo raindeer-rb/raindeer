@@ -3,10 +3,10 @@
 require 'low_event'
 require 'providers'
 
+require_relative 'events/route_event'
+require_relative 'events/wildcard_event'
 require_relative 'route'
-require_relative 'route_event'
 require_relative 'trie'
-require_relative 'wildcard_event'
 
 module Rain
   class Router

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'events/route_event'
 require_relative 'route'
-require_relative 'route_event'
 require_relative 'trie_node'
 
 module Rain
