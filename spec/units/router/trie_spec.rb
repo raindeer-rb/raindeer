@@ -89,10 +89,10 @@ module Rain
         end
 
         context 'when :param is an end node' do
-          it "sets the mid node's event action to #handle" do
+          it "sets the mid node's event action to #side_effect" do
             # /users
             route_event = trie.match(path: '/users/1').first
-            expect(route_event).to have_attributes(action: :handle)
+            expect(route_event).to have_attributes(action: :side_effect)
           end
 
           it "sets the end node's event action to #render" do
@@ -106,10 +106,10 @@ module Rain
               trie.merge(route: Route.new(path: '/users/:id/edit'))
             end
 
-            it "sets the mid node's event action to #handle" do
+            it "sets the mid node's event action to #side_effect" do
               # /users/:id
               route_event = trie.match(path: '/users/1/edit')[1]
-              expect(route_event).to have_attributes(action: :handle)
+              expect(route_event).to have_attributes(action: :side_effect)
             end
 
             it "sets the end node's event action to #render" do

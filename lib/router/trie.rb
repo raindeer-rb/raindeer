@@ -66,9 +66,9 @@ module Rain
 
     private
 
-    # Mid nodes handle events, end nodes render events.
+    # Mid nodes are side_effects, end nodes render.
     def route_event(next_index:, params:, path:, route:)
-      action = path[next_index].nil? ? :render : :handle
+      action = path[next_index].nil? ? :render : :side_effect
       RouteEvent.new(action:, route:, params:)
     end
 
