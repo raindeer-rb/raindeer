@@ -42,18 +42,18 @@ module Rain
       response_event = nil
 
       # The last route event will render a response event which we want to return to the request event.
-      @trie.match(path: event.request.path).each do |route_event|
-        response_event = route_event.trigger
+      @trie.match(request: event.request).each do |route_event|
+        response_event = route_event.take
       end
       return response_event if response_event
 
       if @routes['/*']
         route = Route.new(path: event.request.path, verbs: @routes['/*'].verbs)
-        wildcard_event = WildcardEvent.trigger(key: '/*', action: :render, route:)
+        wildcard_event = WildcardEvent.take(key: '/*', action: :render, route:)
         return wildcard_event if wildcard_event
       end
 
-      Low::Events::StatusEvent.trigger(status: Low::Types::Status[404], request: event.request)
+      StatusEvent.take(status: Status[404], request: event.request)
     end
   end
 end
