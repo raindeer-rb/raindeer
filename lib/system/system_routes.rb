@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 Raindeer.router do
-  get '/system' do
-    get '/events'
-    get '/routes'
+  route :get => '/system' do
+    route :get => '/events'
+    route :get => '/routes'
   end
 end
