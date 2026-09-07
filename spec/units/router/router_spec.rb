@@ -83,13 +83,13 @@ RSpec.describe Rain::Router do
       let(:request) { Low::Support::RequestFactory.request(path: '/users') }
 
       before do
-        class UsersRouteObserver
+        class UsersObserver
           include Observers
           observe '/users'
           observe Low::Types::Status[404]
         end
 
-        allow(UsersRouteObserver).to receive(:render).and_return(true)
+        allow(UsersObserver).to receive(:render).and_return(true)
       end
 
       context 'with "/users" route' do
@@ -99,7 +99,7 @@ RSpec.describe Rain::Router do
 
         it 'triggers route event on observer' do
           router.route_request(event: request_event)
-          expect(UsersRouteObserver).to have_received(:render).with({ event: an_instance_of(Rain::RouteEvent) })
+          expect(UsersObserver).to have_received(:render).with({ event: an_instance_of(Rain::RouteEvent) })
         end
       end
 
@@ -108,7 +108,7 @@ RSpec.describe Rain::Router do
 
         it 'triggers status event on observer' do
           router.route_request(event: request_event)
-          expect(UsersRouteObserver).to have_received(:render).with({ event: an_instance_of(Low::Events::StatusEvent) })
+          expect(UsersObserver).to have_received(:render).with({ event: an_instance_of(Low::Events::StatusEvent) })
         end
       end
     end
