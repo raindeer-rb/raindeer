@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../../factories/request_factory'
 require_relative '../../../lib/router/events/route_event'
 require_relative '../../../lib/router/route'
 require_relative '../../../lib/router/trie'
@@ -39,83 +40,94 @@ module Rain
 
     describe '#match' do
       context 'with a static route' do
+        let(:request) { Low::Support::RequestFactory.request(path: '/users', verb: 'GET') }
+
         it 'creates a route event' do
           trie.merge(route: Route.new(path: '/users'))
 
-          expect(trie.match(path: '/users')).to all(be_instance_of(RouteEvent))
-          expect(trie.match(path: '/users').first.route).to have_attributes(path: '/users')
+          expect(trie.match(request:)).to all(be_instance_of(RouteEvent))
+          expect(trie.match(request:).first.route).to have_attributes(path: '/users')
         end
       end
 
       context 'with a static/dynamic route' do
+        let(:request) { Low::Support::RequestFactory.request(path: '/users/1', verb: 'GET') }
+
         it 'creates a route event' do
           trie.merge(route: Route.new(path: '/users/:id'))
 
-          expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
-          expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users/:id')
+          expect(trie.match(request:)).to all(be_instance_of(RouteEvent))
+          expect(trie.match(request:).first.route).to have_attributes(path: '/users/:id')
         end
       end
 
       context 'with a dynamic route' do
+        let(:request) { Low::Support::RequestFactory.request(path: '/username', verb: 'GET') }
+
         context 'when single level' do
           it 'creates a route event' do
             trie.merge(route: Route.new(path: '/:user_id'))
 
-            expect(trie.match(path: '/username').first.route).to have_attributes(path: '/:user_id')
-            expect(trie.match(path: '/username').first.params).to eq(user_id: 'username')
+            expect(trie.match(request:).first.route).to have_attributes(path: '/:user_id')
+            expect(trie.match(request:).first.params).to eq(user_id: 'username')
           end
         end
 
         context 'when double level' do
+          let(:request) { Low::Support::RequestFactory.request(path: '/username/123', verb: 'GET') }
+
           it 'creates a route event' do
             trie.merge(route: Route.new(path: '/:user_id/:post_id'))
 
-            expect(trie.match(path: '/username/123').first.route).to have_attributes(path: '/:user_id/:post_id')
-            expect(trie.match(path: '/username/123').first.params).to eq(user_id: 'username', post_id: '123')
+            expect(trie.match(request:).first.route).to have_attributes(path: '/:user_id/:post_id')
+            expect(trie.match(request:).first.params).to eq(user_id: 'username', post_id: '123')
           end
         end
       end
 
       context 'with overlapping routes' do
+        let(:request) { Low::Support::RequestFactory.request(path: '/users/1', verb: 'GET') }
+
         before do
           trie.merge(route: Route.new(path: '/users'))
           trie.merge(route: Route.new(path: '/users/:id'))
         end
 
         it 'creates multiple route events' do
-          expect(trie.match(path: '/users/1')).to all(be_instance_of(RouteEvent))
-          expect(trie.match(path: '/users/1').first.route).to have_attributes(path: '/users')
-          expect(trie.match(path: '/users/1').last.route).to have_attributes(path: '/users/:id')
+          expect(trie.match(request:)).to all(be_instance_of(RouteEvent))
+          expect(trie.match(request:).first.route).to have_attributes(path: '/users')
+          expect(trie.match(request:).last.route).to have_attributes(path: '/users/:id')
         end
 
         context 'when :param is an end node' do
+          let(:request) { Low::Support::RequestFactory.request(path: '/users/1', verb: 'GET') }
+
           it "sets the mid node's event action to #side_effect" do
             # /users
-            route_event = trie.match(path: '/users/1').first
             expect(route_event).to have_attributes(action: :side_effect)
+            route_event = trie.match(request:).first
           end
 
           it "sets the end node's event action to #render" do
-            # /users/:id
-            route_event = trie.match(path: '/users/1').last
             expect(route_event).to have_attributes(action: :render)
+            route_event = trie.match(request:).last # => /users/:id
           end
 
           context 'when :param is a mid node' do
+            let(:request) { Low::Support::RequestFactory.request(path: '/users/1/edit', verb: 'GET') }
+
             before do
               trie.merge(route: Route.new(path: '/users/:id/edit'))
             end
 
             it "sets the mid node's event action to #side_effect" do
-              # /users/:id
-              route_event = trie.match(path: '/users/1/edit')[1]
               expect(route_event).to have_attributes(action: :side_effect)
+              route_event = trie.match(request:)[1] # => /users/:id
             end
 
             it "sets the end node's event action to #render" do
-              # /users/:id/edit
-              route_event = trie.match(path: '/users/1/edit').last
               expect(route_event).to have_attributes(action: :render)
+              route_event = trie.match(request:).last # => /users/:id/edit
             end
           end
         end
