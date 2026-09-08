@@ -105,7 +105,7 @@ module Rain
           it "sets the mid node's event action to #side_effect" do
             # /users
             route_event = trie.match(request:).first
-            expect(route_event).to have_attributes(actions: [:side_effect, :get])
+            expect(route_event).to have_attributes(actions: [:side_effect])
           end
 
           it "sets the end node's event action to #render" do
@@ -122,7 +122,7 @@ module Rain
 
             it "sets the mid node's event action to #side_effect" do
               route_event = trie.match(request:)[1] # => /users/:id
-              expect(route_event).to have_attributes(actions: [:side_effect, :get])
+              expect(route_event).to have_attributes(actions: [:side_effect])
             end
 
             it "sets the end node's event action to #render" do
