@@ -4,6 +4,7 @@ require 'low_event'
 
 require_relative 'events/route_event'
 require_relative 'events/wildcard_event'
+require_relative 'http'
 require_relative 'route'
 require_relative 'trie'
 
@@ -14,6 +15,7 @@ module Rain
     include Observers
     include Low::Events
     include Low::Types
+    include Rain::HTTP
 
     attr_reader :routes, :trie
 
@@ -36,6 +38,22 @@ module Rain
       block.call if block_given?
 
       @current_level.pop
+    end
+
+    def get(path, &block)
+      route(GET => path, &block)
+    end
+
+    def post(path, &block)
+      route(POST => path, &block)
+    end
+
+    def update(path, &block)
+      route(UPDATE => path, &block)
+    end
+
+    def delete(path, &block)
+      route(DELETE => path, &block)
     end
 
     def request(event: RequestEvent)
