@@ -6,8 +6,8 @@ module Rain
   class RouteEvent < ::LowEvent
     attr_reader :route, :params
 
-    def initialize(route:, action: :render, params: Hash | nil)
-      super(key: route.path, action:)
+    def initialize(route:, actions: [], params: Hash | nil)
+      super(key: route.path, actions:)
 
       @route = route
       @params = params

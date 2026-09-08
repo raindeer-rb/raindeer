@@ -73,7 +73,7 @@ module Rain
       action = request.path[next_index].nil? ? :render : :side_effect
       action = receive if action == :render && request.body
 
-      RouteEvent.new(action: [action, request.method.downcase.to_sym], route:, params:)
+      RouteEvent.new(actions: [action, request.method.downcase.to_sym], route:, params:)
     end
 
     def capture_param(current_index:, path:)
