@@ -98,7 +98,7 @@ RSpec.describe Rain::Router do
         end
 
         it 'triggers route event on observer' do
-          router.route_request(event: request_event)
+          router.request(event: request_event)
           expect(UsersObserver).to have_received(:render).with({ event: an_instance_of(Rain::RouteEvent) })
         end
       end
@@ -107,7 +107,7 @@ RSpec.describe Rain::Router do
         let(:request) { Low::Support::RequestFactory.request(path: '/missing-path') }
 
         it 'triggers status event on observer' do
-          router.route_request(event: request_event)
+          router.request(event: request_event)
           expect(UsersObserver).to have_received(:render).with({ event: an_instance_of(Low::Events::StatusEvent) })
         end
       end
