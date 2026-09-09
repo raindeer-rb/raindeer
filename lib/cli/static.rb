@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'ruby-progressbar'
 require 'fileutils'
+require 'protocol/http'
+require 'ruby-progressbar'
 
 require 'antlers' # Adds antlers support to lowload.
 require 'lowload'
@@ -13,7 +14,6 @@ module Rain
     module Static
       extend self
 
-      FakeRequest = Data.define(:path)
       RequestResult = Data.define(:path, :status, :html)
 
       def build(application_path:)
@@ -66,7 +66,7 @@ module Rain
         )
 
         paths.map do |path|
-          request = FakeRequest.new(path:)
+          request = Protocol::HTTP::Request.new('http', nil, 'GET', path)
           response = Low::Events::RequestEvent.take(request:).response
           result = RequestResult.new(path:, status: response.status, html: response.read)
           progress_bar.increment

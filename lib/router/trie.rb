@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'events/route_event'
 require_relative 'route'
-require_relative 'route_event'
 require_relative 'trie_node'
 
 module Rain
@@ -39,15 +39,17 @@ module Rain
       current_node.route = route
     end
 
-    def match(path:, current_node: @root_node, current_index: 0, params: {})
+    def match(request:, current_node: @root_node, current_index: 0, params: {})
+      path = request.path
+
       return [] if (key = path[current_index]).nil?
 
       route_events = []
 
       # Static request path segment.
       if (child_node = current_node.child(key:))
-        route_events << route_event(next_index: current_index + 1, params:, path:, route: child_node.route) if child_node.route
-        route_events = [*route_events, *match(path:, current_node: child_node, current_index: current_index + 1, params:)]
+        route_events << route_event(next_index: current_index + 1, params:, request:, route: child_node.route) if child_node.route
+        route_events = [*route_events, *match(request:, current_node: child_node, current_index: current_index + 1, params:)]
       end
 
       # Dynamic request path segment.
@@ -57,8 +59,8 @@ module Rain
         arg, next_index = capture_arg(arg_start_index: current_index, path:)
         params[param.delete_prefix(':').to_sym] = arg
 
-        route_events << route_event(next_index:, params:, path:, route: child_node.route) if child_node.route
-        route_events = [*route_events, *match(path:, current_node: child_node, current_index: next_index, params:)]
+        route_events << route_event(next_index:, params:, request:, route: child_node.route) if child_node.route
+        route_events = [*route_events, *match(request:, current_node: child_node, current_index: next_index, params:)]
       end
 
       route_events
@@ -66,10 +68,15 @@ module Rain
 
     private
 
-    # Mid nodes handle events, end nodes render events.
-    def route_event(next_index:, params:, path:, route:)
-      action = path[next_index].nil? ? :render : :handle
-      RouteEvent.new(action:, route:, params:)
+    # Mid nodes side_effect, end nodes render.
+    def route_event(next_index:, params:, request:, route:)
+      action = request.path[next_index].nil? ? :render : :side_effect
+      action = receive if action == :render && request.body
+
+      actions = [action]
+      actions << request.method.downcase.to_sym unless action == :side_effect
+
+      RouteEvent.new(actions:, route:, params:)
     end
 
     def capture_param(current_index:, path:)

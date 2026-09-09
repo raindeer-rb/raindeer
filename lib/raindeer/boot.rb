@@ -4,6 +4,7 @@ require 'low_event'
 require 'low_node'
 require 'low_type'
 require 'observers'
+require 'plugs'
 require 'providers'
 
 # File paths are relative to the directory where the process is run from, so the app can just require this boot file.
@@ -45,6 +46,7 @@ end
 # FRAMEWORK EXTERNAL API
 #################################################
 
+require_relative 'integrations'
 require_relative 'raindeer'
 
 #################################################
