@@ -29,10 +29,10 @@ module Rain
       Page.new(metadata, raindown)
     end
 
-    def list(**typed_tags)
+    def list(parse_content = true, **typed_tags)
       file_paths = tagged(**typed_tags)
       sorted_paths = file_paths.sort_by { order(it) }
-      sorted_paths.map { |file_path| present_file(file_path:) }
+      sorted_paths.map { |file_path| present_file(file_path:, parse_content:) }
     end
 
     def tagged(**typed_tags)
@@ -88,8 +88,8 @@ module Rain
       !Float(string, exception: false).nil?
     end
 
-    def present_file(file_path:)
-      metadata, markdown = parse_file(file_path:)
+    def present_file(file_path:, parse_content: true)
+      metadata, markdown = parse_file(file_path:, parse_content:)
       metadata[:content] = markdown.empty? ? '' : Raindown.render(markdown:)
       metadata[:path] = Pages.url_path(file_path:)
 
