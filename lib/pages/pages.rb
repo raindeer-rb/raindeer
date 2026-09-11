@@ -23,7 +23,7 @@ module Rain
       file_path = @url_paths[path] || return
 
       metadata, markdown = parse_file(file_path:)
-      raindown = Raindown.render(markdown:)
+      raindown = Raindown.render(markdown:, metadata:)
 
       Page.new(metadata, raindown)
     end

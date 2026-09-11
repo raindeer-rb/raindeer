@@ -8,7 +8,7 @@ module Rain
   module Raindown
     module_function
 
-    def render(markdown:)
+    def render(markdown:, metadata: {})
       template = markdown.gsub('<{', '<!-- ANTLERS').gsub('}>', 'ANTLERS -->')
 
       doc = Commonmarker.parse(template.force_encoding('UTF-8'), options: { extension: { alerts: true }})
@@ -25,7 +25,7 @@ module Rain
 
       ast = Antlers.ast(template:, elements: Antlers::Elements[:html, :prop] + Rain::Elements[:toc])
 
-      Antlers.render(ast:, current_binding: binding)
+      Antlers.render(ast:, current_binding: binding, metadata:)
     end
   end
 end
