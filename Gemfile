@@ -7,10 +7,10 @@ gemspec
 
 group :development do
   local_gems = {
-    'low_event' => '../low_event',
-    'low_loop' => '../low_loop',
-    'low_node' => '../low_node',
-    'low_type' => '../low_type',
+    'lowevent' => '../lowevent',
+    'lowloop' => '../lowloop',
+    'lownode' => '../lownode',
+    'lowtype' => '../lowtype',
     'lowkey' => '../lowkey',
     'dirload' => '../dirload',
 
