@@ -24,7 +24,7 @@ RSpec.describe Antlers::Lexer do
       it 'returns sequence' do
         expect(lexer.parse(template:)).to eq([
           { toc: :default },
-          "<h2 id=\"heading-2\">Heading 2</h2>\n<h3 id=\"heading-3\">Heading 3</h3>"
+          "\n\n<h2 id=\"heading-2\">Heading 2</h2>\n<h3 id=\"heading-3\">Heading 3</h3>"
         ])
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe Antlers::Lexer do
       end
 
       let(:sequence) do
-        [{ list_def: 'value', folder: 'cards' }, { var: 'value' }, { list_end: 'level_1' }]
+        [{ list_def: 'value', folder: "'cards'" }, "\n  ", { var: 'value' }, "\n", { list_end: 'level_1' }]
       end
 
       it 'returns sequence' do
@@ -58,7 +58,10 @@ RSpec.describe Antlers::Lexer do
         end
 
         let(:sequence) do
-          ['<html>', { list_def: 'item', folder: 'items' }, { var: 'item' }, { list_end: 'level_1' }, '</html>']
+          [
+            "<html>\n  ", { list_def: 'item', folder: 'items' }, "\n    ", { var: 'item' }, "\n  ",
+            { list_end: 'level_1' }, "\n</html>"
+          ]
         end
 
         it 'returns sequence' do
