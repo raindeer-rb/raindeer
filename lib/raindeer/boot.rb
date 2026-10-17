@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'low_event'
-require 'low_node'
-require 'low_type'
+require 'lowevent'
+require 'lownode'
+require 'lowtype'
 require 'observers'
 require 'plugs'
 require 'providers'
@@ -37,7 +37,7 @@ module Rain
   end
 
   Providers.define('low.loop') do
-    require 'low_loop'
+    require 'lowloop'
     LowLoop.new(config:, router: Providers['rain.router'], renderer: Providers['rain.matrix'])
   end
 end

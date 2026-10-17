@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'observers'
-require 'low_event'
+require 'lowevent'
 
 require_relative '../../../lib/router/http'
 require_relative '../../../lib/router/router'

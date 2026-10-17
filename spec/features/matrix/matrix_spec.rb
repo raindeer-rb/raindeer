@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'paint'
-require 'low_event'
+require 'lowevent'
 
 require_relative '../../../lib/matrix/matrix'
 require_relative '../../../lib/support/config_loader'

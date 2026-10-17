@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'observers'
-require 'low_node'
+require 'lownode'
 require 'dirload'
 require 'antlers' # lownode doesn't automatically require antlers.
 
