@@ -54,7 +54,7 @@ Raindeer glues [Low](https://github.com/low-rb) components together with a route
 Anything that just "is how it is" can be made simpler. It can take a lot of time to find a way how but it's worth it. Having grown up dumb; we should really care about people learning new things. People shouldn't have to learn much and one way to do this is by removing things:
 
 - **Namespaces** - Lexical scopes can be confusing and the `::` syntax just doesn't look right. They are optional (and still used internally by Raindeer)
-- **Heredoc** - Multi-line HTML can be written directly inside a Ruby class via RBX. See [LowLoad](https://github.com/low-rb/lowload)
+- **Heredoc** - Multi-line HTML can be written directly inside a Ruby class via RBX. See [LowLoad](https://github.com/low-rb/dirload)
 - **MVC** - Arbitrary files in arbitrary locations called in an arbitrary order. Just `observe` an event in a [node](https://github.com/low-rb/low_node) and render output, or call more code
 
 ### 🧩 The Framework Anti-Pattern

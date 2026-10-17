@@ -53,14 +53,14 @@ require_relative 'raindeer'
 # APPLICATION CODE
 #################################################
 
-require 'antlers' # Adds antlers support to lowload.
-require 'lowload'
-LowLoad.dirload(File.expand_path('../system', __dir__))
+require 'antlers' # Adds antlers support to dirload.
+require 'dirload'
+dirload(File.expand_path('../system', __dir__))
 
 application_path = File.expand_path('app', Dir.pwd)
 return unless Dir.exist?(application_path)
 
-metadata = LowLoad.dirload(application_path)
+metadata = dirload(application_path)
 
 if Dir.exist?(File.expand_path('pages', application_path))
   Providers.define('rain.pages', eager: true) do

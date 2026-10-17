@@ -4,8 +4,8 @@ require 'fileutils'
 require 'protocol/http'
 require 'ruby-progressbar'
 
-require 'antlers' # Adds antlers support to lowload.
-require 'lowload'
+require 'antlers' # Adds antlers support to dirload.
+require 'dirload'
 
 require_relative '../pages/pages'
 
@@ -41,7 +41,7 @@ module Rain
       private
 
       def load_user_application(app_path:)
-        metadata = LowLoad.dirload(app_path)
+        metadata = dirload(app_path)
 
         if Dir.exist?(File.expand_path('pages', app_path))
           Providers.define('rain.pages', eager: true) do

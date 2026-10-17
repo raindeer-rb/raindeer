@@ -12,7 +12,7 @@ group :development do
     'low_node' => '../low_node',
     'low_type' => '../low_type',
     'lowkey' => '../lowkey',
-    'lowload' => '../lowload',
+    'dirload' => '../dirload',
 
     'antlers' => '../antlers',
     'expressions' => '../expressions',
