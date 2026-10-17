@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'observers'
-require 'low_node'
-require 'lowload'
+require 'lownode'
+require 'dirload'
 require 'antlers' # lownode doesn't automatically require antlers.
 
-LowLoad.lowload(File.join(Dir.pwd, '/lib/system/status_404_node.rbx'))
-LowLoad.lowload(File.join(Dir.pwd, '/lib/system/layouts/layout_node.rbx'))
+dirload(File.join(Dir.pwd, '/lib/system/status_404_node.rbx'))
+dirload(File.join(Dir.pwd, '/lib/system/layouts/layout_node.rbx'))
 
 require_relative '../../factories/request_factory'
 require_relative '../../fixtures/mock_router'
@@ -19,7 +19,7 @@ RSpec.describe Status404Node do
   before do
     Observers::Keys.reset
     Object.send(:remove_const, 'Status404Node') unless defined?(Status404Node)
-    LowLoad.lowload(File.join(Dir.pwd, '/lib/system/status_404_node.rbx'))
+    dirload(File.join(Dir.pwd, '/lib/system/status_404_node.rbx'))
   end
 
   context 'when a 404 status event is triggered' do

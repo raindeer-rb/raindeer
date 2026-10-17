@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'antlers'
+require 'antlers/api'
 require 'nokogiri'
 
 module Rain
@@ -11,7 +11,7 @@ module Rain
       @template = template
     end
 
-    def render(current_binding: nil, parent_binding: nil, slot_node: nil)
+    def render(current_binding: nil, parent_binding: nil, slot_node: nil, metadata: {})
       doc = Nokogiri::HTML(@template)
 
       <<~HTML

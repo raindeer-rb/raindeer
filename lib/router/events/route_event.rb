@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'low_event'
+require 'lowevent'
 
 module Rain
   class RouteEvent < ::LowEvent

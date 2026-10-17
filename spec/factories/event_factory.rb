@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'low_event'
+require 'lowevent'
 require_relative '../fixtures/mock_events'
 
 module Fixtures

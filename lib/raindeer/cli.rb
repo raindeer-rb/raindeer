@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'low_node'
-require 'low_type'
+require 'lownode'
+require 'lowtype'
 require 'observers'
 require 'providers'
 

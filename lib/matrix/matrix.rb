@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'low_event'
-require 'low_type'
+require 'lowevent'
+require 'lowtype'
 require 'observers'
 require 'paint'
 

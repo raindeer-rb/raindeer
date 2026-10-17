@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'low_event'
+require 'lowevent'
 
 require_relative 'events/route_event'
 require_relative 'events/wildcard_event'

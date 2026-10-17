@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'low_event'
+require 'lowevent'
 
 require_relative '../../../lib/matrix/stream'
 require_relative '../../../lib/support/config_loader'
