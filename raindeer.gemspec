@@ -30,11 +30,8 @@ Gem::Specification.new do |spec|
   spec.bindir = 'bin'
   spec.executables = ['rain']
 
-  spec.add_dependency 'commonmarker'
-  spec.add_dependency 'nokogiri'
   spec.add_dependency 'ostruct'
   spec.add_dependency 'paint'
-  spec.add_dependency 'rouge'
   spec.add_dependency 'ruby-progressbar'
 
   spec.add_dependency 'dirload', '~> 0.7.0'
@@ -48,5 +45,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'observers'
   spec.add_dependency 'plugs'
   spec.add_dependency 'providers'
+  spec.add_dependency 'raindown', '~> 0.2'
   spec.add_dependency 'trees'
 end

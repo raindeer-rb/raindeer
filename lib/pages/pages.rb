@@ -1,138 +1,54 @@
 # frozen_string_literal: true
 
-require_relative 'raindown/raindown'
+require 'raindown'
 
 module Rain
-  class Pages
+  # Generates static site pages and those pages have file paths that match a route "{page.path}".
+  # Unlike the Raindown CLI we don't write-back and we hide directives "<{}>" in the html output.
+  # This repo's .raindown/config.yml is for its own Markdown/Raindown files, not the static site.
+  class Pages < Raindown::Pages
     include LowType
 
     attr_reader :url_paths
 
     Page = Struct.new(:metadata, :html)
+    RENDER_OPTIONS = { hide_directives: true }.freeze
 
     def initialize(metadata:)
-      @metadata = metadata
-      @file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
       @url_paths = {}
-      @tags = {}
 
-      process_files
+      super(metadata:, root: Pages.pages_path, render_options: RENDER_OPTIONS)
     end
 
     def page(path:)
       path = '/home' if path == '/'
       file_path = @url_paths[path] || return
 
-      metadata, markdown = parse_file(file_path:)
-      raindown = Raindown.render(markdown:, metadata: self)
-
-      Page.new(metadata, raindown)
-    end
-
-    def list(parse_content = true, **typed_tags)
-      file_paths = tagged(**typed_tags)
-      sorted_paths = file_paths.sort_by { order(it) }
-      sorted_paths.map { |file_path| present_file(file_path:, parse_content:) }
-    end
-
-    def tagged(**typed_tags)
-      file_paths = []
-
-      typed_tags.each do |type, tag|
-        file_paths = [*file_paths, *@tags.dig(type, tag)]
-      end
-
-      file_paths
+      Page.new(@metadata[file_path], Raindown.render_file(path: file_path, metadata: self, **RENDER_OPTIONS))
     end
 
     private
 
-    def process_files
-      @file_paths.each do |file_path|
-        url_path = Pages.url_path(file_path:)
-        @url_paths[url_path] = file_path unless url_path.empty?
+    # Adds the URL path to Raindown's metadata for the file, in place of its file path.
+    def implicit_metadata(file_path:)
+      url_path = Pages.url_path(file_path:)
+      @url_paths[url_path] = file_path unless url_path.empty?
 
-        tag(type: :folder, tag: folders(file_path:).last, file_path:)
-
-        metadata, * = parse_file(file_path:, parse_content: false)
-        metadata.each do |type, tag|
-          tag(type:, tag:, file_path:)
-        end
-      end
-    end
-
-    def tag(type:, tag:, file_path:)
-      @tags[type] ||= {}
-      @tags[type][tag] ||= []
-      @tags[type][tag] << file_path
-    end
-
-    def folders(file_path:)
-      File.dirname(file_path)
-          .split(Regexp.union(['/', '&', '-']))
-          .filter { it.start_with?('_') }
-          .map { it.delete_prefix('_') }
-          .filter { !number?(it) }
-    end
-
-    def order(file_path)
-      file_path
-        .split(Regexp.union(['/', '&', '-']))
-        .filter { it.start_with?('_') }
-        .map { it.delete_prefix('_') }
-        .filter { number?(it) }
-        .last
-    end
-
-    def number?(string)
-      !Float(string, exception: false).nil?
-    end
-
-    def present_file(file_path:, parse_content: true)
-      metadata, markdown = parse_file(file_path:, parse_content:)
-      metadata[:content] = markdown.empty? ? '' : Raindown.render(markdown:)
-      metadata[:path] = Pages.url_path(file_path:)
-
-      OpenStruct.new(metadata)
-    end
-
-    def parse_file(file_path:, parse_content: true)
-      dash_lines = []
-      data_lines = []
-      text_lines = []
-
-      File.foreach(file_path) do |line|
-        line.force_encoding('UTF-8')
-
-        if line.strip == '---' && dash_lines.count < 2
-          dash_lines << line
-          next
-        elsif dash_lines.count > 0 && dash_lines.count < 2
-          data_lines << line
-          next
-        end
-
-        break unless parse_content
-
-        text_lines << line
-      end
-
-      metadata = YAML.safe_load(data_lines.join, symbolize_names: true) || []
-      [metadata, text_lines.join.strip]
+      super.merge(path: url_path)
     end
 
     class << self
-      # Remove segments beginning with "_" and ending with "&", "-" or "/".
-      # Example: app/pages/docs/_basics/_1-getting-started.md => app/pages/docs/getting-started.md
+      # Remove segments beginning with "_" and ending with "&", "-" or "/", from the path under app/pages.
+      # Example: app/pages/docs/_basics/_1-getting-started.md => /docs/getting-started
       def url_path(file_path:)
-        url_path = file_path.split(Regexp.union(['/', '&'])).map do |segment|
-          next segment.sub(/^_\d\W/, '') if segment.sub(/^_\d\W/, '') != segment
-          next nil if segment.sub(/^_/, '') != segment
+        url_path = file_path.delete_prefix(pages_path).split(Regexp.union(['/', '&'])).map do |segment|
+          next segment.sub(/^_\d+\W/, '') if segment.match?(/^_\d+\W/)
+          next nil if segment.start_with?('_')
 
           segment
         end.compact.join('/')
 
-        url_path.delete_prefix(pages_path).delete_suffix(File.extname(url_path))
+        url_path.delete_suffix(File.extname(url_path))
       end
 
       def pages_path
