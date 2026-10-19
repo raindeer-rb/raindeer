@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dirload', '~> 0.7.0'
   spec.add_dependency 'lowevent', '~> 0.8.1'
   spec.add_dependency 'lowloop', '~> 0.8.1'
-  spec.add_dependency 'lownode', '~> 0.5.2'
+  spec.add_dependency 'lownode', '~> 0.5.3'
   spec.add_dependency 'lowtype', '~> 1.6'
 
   spec.add_dependency 'antlers', '~> 1.0'
