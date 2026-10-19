@@ -19,6 +19,7 @@ group :development do
     'observers' => '../observers',
     'plugs' => '../plugs',
     'providers' => '../providers',
+    'raindown' => '../raindown',
     'trees' => '../trees'
   }
 

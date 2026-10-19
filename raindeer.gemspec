@@ -30,17 +30,14 @@ Gem::Specification.new do |spec|
   spec.bindir = 'bin'
   spec.executables = ['rain']
 
-  spec.add_dependency 'commonmarker'
-  spec.add_dependency 'nokogiri'
   spec.add_dependency 'ostruct'
   spec.add_dependency 'paint'
-  spec.add_dependency 'rouge'
   spec.add_dependency 'ruby-progressbar'
 
   spec.add_dependency 'dirload', '~> 0.7.0'
   spec.add_dependency 'lowevent', '~> 0.8.1'
   spec.add_dependency 'lowloop', '~> 0.8.1'
-  spec.add_dependency 'lownode', '~> 0.5.2'
+  spec.add_dependency 'lownode', '~> 0.5.3'
   spec.add_dependency 'lowtype', '~> 1.6'
 
   spec.add_dependency 'antlers', '~> 1.0'
@@ -48,5 +45,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'observers'
   spec.add_dependency 'plugs'
   spec.add_dependency 'providers'
+  spec.add_dependency 'raindown', '~> 0.2'
   spec.add_dependency 'trees'
 end
