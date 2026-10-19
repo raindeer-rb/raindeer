@@ -54,11 +54,7 @@ module Rain
       end
 
       def request_results(metadata:)
-        file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
-        paths = file_paths.map { |file_path| Rain::Pages.url_path(file_path:) }.compact
-        paths << '/'
-        # Skip files that became solely metadata due to underscores hiding the entire file path.
-        paths.reject! { |url_path| url_path == '' }
+        paths = request_paths(metadata:)
 
         progress_bar = ProgressBar.create(
           total: paths.size,
@@ -72,6 +68,21 @@ module Rain
           progress_bar.increment
           result
         end
+      end
+
+      def request_paths(metadata:)
+        file_paths = metadata.file_types.values_at('md', 'rd', 'markdown', 'raindown').flat_map { it }.compact
+        paths = file_paths.map { |file_path| Rain::Pages.url_path(file_path:) }.compact
+        paths << '/'
+        paths.concat(static_routes).uniq!
+        # Skip files that became solely metadata due to underscores hiding the entire file path.
+        paths.reject { |url_path| url_path == '' }
+      end
+
+      # GET routes like '/gems' that don't need a param or wildcard to be requested.
+      def static_routes
+        routes = Providers['rain.router'].routes.values
+        routes.select { |route| route.verbs.include?(Rain::HTTP::GET) && !route.path.match?(/[:*]/) }.map(&:path)
       end
     end
   end
