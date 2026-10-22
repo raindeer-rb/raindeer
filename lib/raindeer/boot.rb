@@ -69,3 +69,9 @@ if Dir.exist?(application_path)
     end
   end
 end
+
+#################################################
+# FRAMEWORK INTERNAL CLEANUP
+#################################################
+
+Lowkey.clear
