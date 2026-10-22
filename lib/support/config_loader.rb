@@ -18,6 +18,15 @@ module Rain
         OpenStruct.new(config_data)
       end
 
+      # Environment variables are strings, so "4133" becomes 4133.
+      def parse_integer(value)
+        return nil if value.nil?
+
+        Integer(value, 10)
+      rescue ArgumentError
+        raise ArgumentError, "Expected an integer, got #{value.inspect}"
+      end
+
       def parse_boolean(value)
         return true if value == '1'
         return false if value == '0'

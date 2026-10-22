@@ -17,7 +17,7 @@ module Rain
   require_relative '../support/config_loader'
   env = {
     host: ENV.fetch('RAIN_HOST', nil),
-    port: ENV.fetch('RAIN_PORT', nil),
+    port: ConfigLoader.parse_integer(ENV.fetch('RAIN_PORT', nil)),
     web_root: ENV.fetch('RAIN_WEB_ROOT', nil),
     debug_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_DEBUG', true)),
     matrix_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_MATRIX', nil)),
@@ -58,13 +58,14 @@ require 'dirload'
 dirload(File.expand_path('../system', __dir__))
 
 application_path = File.expand_path('app', Dir.pwd)
-return unless Dir.exist?(application_path)
 
-metadata = dirload(application_path)
+if Dir.exist?(application_path)
+  metadata = dirload(application_path)
 
-if Dir.exist?(File.expand_path('pages', application_path))
-  Providers.define('rain.pages', eager: true) do
-    require_relative '../pages/pages'
-    Rain::Pages.new(metadata:)
+  if Dir.exist?(File.expand_path('pages', application_path))
+    Providers.define('rain.pages', eager: true) do
+      require_relative '../pages/pages'
+      Rain::Pages.new(metadata:)
+    end
   end
 end
