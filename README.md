@@ -37,7 +37,7 @@ The RainRouter accepts `RequestEvent`s and directs the request to the appropriat
 
 ### LowData
 
-[LowData](https://github.com/low-rb/low_data) follows the repository pattern with a twist; [Data Expressions](https://github.com/raindeer-rb/expressions). A data expression like `Users[:username] + Posts[:title, :body]` builds a SQL query to `OUTER JOIN` the `Users` table into the `Posts` table and results in a list of posts with the user's username in each row.
+[LowData](https://github.com/low-rb/lowdata) follows the repository pattern with a twist; [Data Expressions](https://github.com/raindeer-rb/expressions). Round brackets choose rows, square brackets choose columns and operators combine tables: `Posts(published: true)[:title] + Users[:username]` returns each published post's title with its user nested inside.
 
 ## Architecture
 
@@ -77,17 +77,17 @@ Developers will use patterns applicable to their application that are different 
 
 Methods and classes should be *compositional*, so that you can understand their hidden complexity by drilling down into them as they go, rather than calling one magic method that does a bunch of side quests. APIs should be less magical and more compositional.
 
-A perfect example is the `has_many` helper method provided by various ORMs. This method adds "association" methods to a model, then hides the fact that databases do joins on tables. You will have to do a `JOIN` on a table eventually, so it's better to represent tables as being merged together from the start. There has to be a more compositional way that exposes the database structure while letting you query that structure easily. Raindeer uses [LowData](https://github.com/low-rb/low_data) to represent table structure compositionally:
+A perfect example is the `has_many` helper method provided by various ORMs. This method adds "association" methods to a model, then hides the fact that databases do joins on tables. You will have to do a `JOIN` on a table eventually, so it's better to represent tables as being merged together from the start. There has to be a more compositional way that exposes the database structure while letting you query that structure easily. Raindeer uses [LowData](https://github.com/low-rb/lowdata) to represent table structure compositionally:
 
 ```ruby
 class PostsData < LowData
   def all
-    Users[:username] + Posts[:title, :body]
+    Posts[:title, :body] + Users[:username]
   end
 end
 ```
 
-ℹ️ This data expression generates SQL to `OUTER JOIN` the user table with the posts table and results in a list of posts with the user's username included in each row.
+ℹ️ This data expression follows the `posts.user_id` foreign key and returns each post with its user nested inside: `{ title: 'Hello', body: '...', user: { username: 'alice' } }`. For flat rows instead, `Posts[:title, :body] & Users[:username]` is an inner join.
 
 ## Getting Started
 
@@ -114,7 +114,7 @@ Join us in the `raindeer` tag on the [Ruby Users Forum](https://www.rubyforum.or
 ## Contributing
 
 Raindeer needs developer contributions around:
-- Database layer - [SQL generation](https://github.com/low-rb/low_data), performance, migrations
+- Database layer - [SQL generation](https://github.com/low-rb/lowdata), performance, migrations
 - Deployment layer - Credential management, authentication
 - Tooling - [CLI](https://github.com/raindeer-rb/raindeer/blob/main/lib/cli/cli.rb), [Static-site generation](https://raindeer.dev/docs/static)
 - Performance testing and fixing
