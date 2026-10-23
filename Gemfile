@@ -5,24 +5,25 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in raindeer.gemspec
 gemspec
 
+local_gems = {
+  'dirload' => '../dirload',
+  'lowdata' => '../lowdata',
+  'lowevent' => '../lowevent',
+  'lowloop' => '../lowloop',
+  'lownode' => '../lownode',
+  'lowtype' => '../lowtype',
+  'lowkey' => '../lowkey',
+
+  'antlers' => '../antlers',
+  'expressions' => '../expressions',
+  'observers' => '../observers',
+  'plugs' => '../plugs',
+  'providers' => '../providers',
+  'raindown' => '../raindown',
+  'trees' => '../trees'
+}
+
 group :development do
-  local_gems = {
-    'lowevent' => '../lowevent',
-    'lowloop' => '../lowloop',
-    'lownode' => '../lownode',
-    'lowtype' => '../lowtype',
-    'lowkey' => '../lowkey',
-    'dirload' => '../dirload',
-
-    'antlers' => '../antlers',
-    'expressions' => '../expressions',
-    'observers' => '../observers',
-    'plugs' => '../plugs',
-    'providers' => '../providers',
-    'raindown' => '../raindown',
-    'trees' => '../trees'
-  }
-
   local_gems.each do |name, relative_path|
     if File.exist?(File.expand_path(relative_path, __dir__))
       gem name, path: relative_path
