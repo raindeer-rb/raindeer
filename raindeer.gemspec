@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.bindir = 'bin'
   spec.executables = ['rain']
 
+  spec.add_dependency 'listen'
   spec.add_dependency 'ostruct'
   spec.add_dependency 'paint'
   spec.add_dependency 'ruby-progressbar'

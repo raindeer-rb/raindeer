@@ -37,6 +37,13 @@ module Rain
   end
 
   Providers.define('low.loop') do
+    if config.assets
+      require_relative '../assets/assets'
+      assets = Assets.new(web_root: config.web_root, bundles: config.assets)
+      assets.build
+      assets.watch if config.debug_mode
+    end
+
     require 'lowloop'
     LowLoop.new(config:, router: Providers['rain.router'], renderer: Providers['rain.matrix'])
   end

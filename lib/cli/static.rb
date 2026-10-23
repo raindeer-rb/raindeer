@@ -20,9 +20,12 @@ module Rain
         metadata = load_user_application(app_path: File.expand_path('app', application_path))
         build_path = File.expand_path('build', application_path)
 
+        public_path = File.expand_path('public', application_path)
+        build_assets(application_path:, public_path:)
+
         FileUtils.rm_rf(build_path)
         FileUtils.mkdir_p(build_path)
-        FileUtils.cp_r("#{File.expand_path('public', application_path)}/.", build_path)
+        FileUtils.cp_r("#{public_path}/.", build_path)
 
         Low::Events::RequestEvent.define do |observers|
           observers << Providers['rain.router']
@@ -39,6 +42,19 @@ module Rain
       end
 
       private
+
+      # Bundles are written into "public" and .gitignore'd, then copied into the build with everything else.
+      def build_assets(application_path:, public_path:)
+        config_path = File.expand_path('config/config.yaml', application_path)
+        return unless File.exist?(config_path)
+
+        require_relative '../support/config_loader'
+        bundles = Rain::ConfigLoader.load(config_path).assets
+        return unless bundles
+
+        require_relative '../assets/assets'
+        Rain::Assets.new(web_root: public_path, bundles:).build
+      end
 
       def load_user_application(app_path:)
         metadata = dirload(app_path)
