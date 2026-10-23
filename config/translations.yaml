@@ -1,0 +1,7 @@
+# Translates strings like {"Dashboard"} and symbols like {:app_name}. See https://raindeer.dev/docs/translations
+# The "source_locale" option in config.yaml is the language templates are written in.
+#
+# symbols:
+#   app_name: 'Raindeer'
+# es:
+#   'Dashboard': 'Panel'

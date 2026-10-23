@@ -76,6 +76,59 @@ RSpec.describe Rain::Router do
           expect(router.request(event: request_event)).to be('mock response')
           expect(WildcardObserver).to have_received(:render).with({ event: an_instance_of(Rain::WildcardEvent) })
         end
+
+        context 'with translations' do
+          let(:request) do
+            Low::Support::RequestFactory.request(path: '/anything').tap { it.headers.add('accept-language', 'es-MX, en;q=0.8') }
+          end
+
+          before do
+            Antlers::Translations.load({ es: { 'Hello' => 'Hola' } })
+            allow(WildcardObserver).to receive(:render) { Antlers::Translations.translate('Hello') }
+          end
+
+          after { Antlers::Translations.load({}) }
+
+          it 'renders in the requested locale' do
+            expect(router.request(event: request_event)).to eq('Hola')
+            expect(Antlers::Translations.locale).to be_nil
+          end
+
+          context 'with a response' do
+            let(:response) { Protocol::HTTP::Response[200, Protocol::HTTP::Headers.new, ['Hola']] }
+
+            before do
+              allow(WildcardObserver).to receive(:render).and_return(Low::Events::ResponseEvent.new(response:))
+            end
+
+            it 'varies the response by Accept-Language' do
+              router.request(event: request_event)
+
+              expect(response.headers['vary']).to include('accept-language')
+            end
+
+            it 'sets the picked language as the Content-Language' do
+              router.request(event: request_event)
+
+              expect(response.headers['content-language']).to eq(['es'])
+            end
+
+            it 'keeps a Content-Language the response already set' do
+              response.headers.add('content-language', 'es-MX')
+              router.request(event: request_event)
+
+              expect(response.headers['content-language']).to eq(['es-MX'])
+            end
+
+            it "doesn't add language headers without translations" do
+              Antlers::Translations.load({})
+              router.request(event: request_event)
+
+              expect(response.headers['vary']).to be_nil
+              expect(response.headers['content-language']).to be_nil
+            end
+          end
+        end
       end
     end
 

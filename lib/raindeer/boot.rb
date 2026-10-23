@@ -27,6 +27,9 @@ module Rain
   config_path = File.expand_path('config/config.yaml', Dir.pwd)
   config = ConfigLoader.load(config_path, env)
 
+  require_relative '../translations/translations'
+  Translations.load(source_locale: config.source_locale)
+
   Providers.define('rain.router') do
     require_relative '../router/router'
     Router.new

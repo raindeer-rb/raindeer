@@ -9,6 +9,7 @@ require 'dirload'
 require 'lowdata' # Data classes can be loaded without a database.
 
 require_relative '../pages/pages'
+require_relative '../support/config_loader'
 
 module Rain
   module CLI
@@ -23,6 +24,7 @@ module Rain
 
         public_path = File.expand_path('public', application_path)
         build_assets(application_path:, public_path:)
+        load_translations(application_path:)
 
         FileUtils.rm_rf(build_path)
         FileUtils.mkdir_p(build_path)
@@ -50,12 +52,20 @@ module Rain
         config_path = File.expand_path('config/config.yaml', application_path)
         return unless File.exist?(config_path)
 
-        require_relative '../support/config_loader'
         bundles = Rain::ConfigLoader.load(config_path).assets
         return unless bundles
 
         require_relative '../assets/assets'
         Rain::Assets.new(web_root: public_path, bundles:).build
+      end
+
+      # Static builds have no Accept-Language header, so pages render in the "source_locale" config option ("en" by default).
+      def load_translations(application_path:)
+        config_path = File.expand_path('config/config.yaml', application_path)
+        source_locale = File.exist?(config_path) ? Rain::ConfigLoader.load(config_path).source_locale : nil
+
+        require_relative '../translations/translations'
+        Rain::Translations.load(File.expand_path('config/translations.yaml', application_path), source_locale:)
       end
 
       def load_user_application(app_path:)

@@ -4,6 +4,10 @@ web_root: './public'
 debug_mode: true
 matrix_mode: true
 mirror_mode: false
+
+# The language templates are written in, used when a request's Accept-Language doesn't match any translations.
+source_locale: 'en'
+
 content_types:
   html: text/html
   css: text/css
