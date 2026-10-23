@@ -6,6 +6,7 @@ require 'ruby-progressbar'
 
 require 'antlers' # Adds antlers support to dirload.
 require 'dirload'
+require 'lowdata' # Data classes can be loaded without a database.
 
 require_relative '../pages/pages'
 
@@ -35,6 +36,7 @@ module Rain
           folder_path = File.join(build_path, request_result.path)
 
           puts "#{folder_path} => #{request_result.status}"
+          next unless request_result.html
 
           FileUtils.mkdir_p(folder_path)
           File.write(File.expand_path('index.html', folder_path), request_result.html)
@@ -80,10 +82,20 @@ module Rain
         paths.map do |path|
           request = Protocol::HTTP::Request.new('http', nil, 'GET', path)
           response = Low::Events::RequestEvent.take(request:).response
-          result = RequestResult.new(path:, status: response.status, html: response.read)
+          RequestResult.new(path:, status: response.status, html: response.read)
+        rescue Observers::ObserverError => e
+          raise unless database_error?(e)
+
+          # Static sites don't have a database so paths that need one are skipped.
+          RequestResult.new(path:, status: 'Skipped', html: nil)
+        ensure
           progress_bar.increment
-          result
         end
+      end
+
+      def database_error?(error)
+        error = error.cause until error.nil? || error.is_a?(LowData::ConfigError)
+        error&.message == LowData::ConfigError::MISSING_DATABASE
       end
 
       def request_paths(metadata:)
