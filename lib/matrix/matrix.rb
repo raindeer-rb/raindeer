@@ -18,7 +18,7 @@ module Rain
     def initialize(event_pool:, config: ConfigLoader.load('matrix.yaml'))
       @event_pool = event_pool
       @config = config
-      @effects = [LeetEffect.new(config:), ColorEffect.new(config:)]
+      @effects = [(LeetEffect.new(config:) if config.leet), ColorEffect.new(config:)].compact
 
       @screen_size = nil
 

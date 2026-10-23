@@ -12,7 +12,7 @@ RSpec.describe Rain::Matrix do
   subject(:matrix) { described_class.new(event_pool:, config:) }
 
   let(:event_pool) { instance_double(Low::Events::EventPool, event_trees:) }
-  let(:config) { Rain::ConfigLoader.load('matrix.yaml', overrides) }
+  let(:config) { Rain::ConfigLoader.load(File.expand_path('../../fixtures/config/matrix.yaml', __dir__), overrides) }
   let(:overrides) { {} }
   let(:show_output) { ENV['SHOW_OUTPUT'] == '1' }
 

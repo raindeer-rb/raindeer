@@ -6,3 +6,4 @@ start_row: 0 # Options are :random, 0
 min_delay: 75
 fade: false
 fade_delay: 250
+leet: false
