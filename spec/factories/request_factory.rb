@@ -7,7 +7,7 @@ module Low
     class RequestFactory
       class << self
         def request(path:, verb: 'GET')
-          headers = Protocol::HTTP::Headers[['accept', 'text/html']]
+          headers = Protocol::HTTP::Headers['accept' => 'text/html']
 
           Protocol::HTTP::Request.new('http', "#{ENV['HOST']}:#{ENV['PORT']}", verb, path, 'http/1.1', headers)
         end
