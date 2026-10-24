@@ -48,7 +48,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'antlers', '~> 1.3'
   spec.add_dependency 'expressions', '~> 0.4'
-  spec.add_dependency 'observers', '~> 0.9'
+  spec.add_dependency 'observers', '~> 1.0'
   spec.add_dependency 'plugs', '~> 0.4'
   spec.add_dependency 'providers', '~> 0.6'
   spec.add_dependency 'raindown', '~> 0.2'
