@@ -39,11 +39,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'paint'
   spec.add_dependency 'ruby-progressbar'
 
-  spec.add_dependency 'dirload', '~> 0.7'
+  spec.add_dependency 'dirload', '~> 0.7', '>= 0.7.1'
   spec.add_dependency 'lowdata', '~> 0.3'
   spec.add_dependency 'lowevent', '~> 0.8'
-  spec.add_dependency 'lowloop', '~> 0.8'
-  spec.add_dependency 'lownode', '~> 0.5'
+  spec.add_dependency 'lowloop', '~> 0.8', '>= 0.8.4'
+  spec.add_dependency 'lownode', '~> 0.5', '>= 0.5.6'
   spec.add_dependency 'lowtype', '>= 1.6.1'
 
   spec.add_dependency 'antlers', '~> 1.3'
