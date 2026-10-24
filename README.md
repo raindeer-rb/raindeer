@@ -8,7 +8,6 @@
 <a href="https://discord.gg/UBex4JQgnX"><img alt="Discord" src="https://img.shields.io/discord/1501858220224937997?logo=discord" height="18"></a>
 <a href="https://www.rubyforum.org/tag/raindeer"><img alt="Ruby Users Forum" src="https://img.shields.io/discourse/topics?server=https%3A%2F%2Fwww.rubyforum.org&style=flat&logo=discourse&label=Ruby%20Users%20Forum" height="18"></a>
 
-
 Raindeer is an event-driven framework using the dynamic features and latest async improvements in Ruby + some weird ideas, to build a new breed of web application. Each Raindeer component can be used individually in your existing application, or all together as a cohesive framework. **Deer to be different.**
 
 ## Components
@@ -94,7 +93,7 @@ end
 **Create your application:**
 ```shell
 gem install raindeer
-rain new :app_name
+rain new my_app
 ```
 
 Or clone the [template](https://github.com/raindeer-rb/raindeer-template).
@@ -110,13 +109,3 @@ rain server
 ## Community
 
 Join us in the `raindeer` tag on the [Ruby Users Forum](https://www.rubyforum.org/tag/raindeer).
-
-## Contributing
-
-Raindeer needs developer contributions around:
-- Database layer - [SQL generation](https://github.com/low-rb/lowdata), performance, migrations
-- Deployment layer - Credential management, authentication
-- Tooling - [CLI](https://github.com/raindeer-rb/raindeer/blob/main/lib/cli/cli.rb), [Static-site generation](https://raindeer.dev/docs/static)
-- Performance testing and fixing
-
-If you have a love for human-written code that's easy to understand then please consider [making a contribution](https://github.com/raindeer-rb/raindeer/issues/1).
