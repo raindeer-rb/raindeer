@@ -71,7 +71,7 @@ module Rain
     # Mid nodes side_effect, end nodes render.
     def route_event(next_index:, params:, request:, route:)
       action = request.path[next_index].nil? ? :render : :side_effect
-      action = receive if action == :render && request.body
+      action = :receive if action == :render && request.body
 
       actions = [action]
       actions << request.method.downcase.to_sym unless action == :side_effect
