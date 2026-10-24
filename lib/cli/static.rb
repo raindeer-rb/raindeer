@@ -35,14 +35,21 @@ module Rain
         end
 
         request_results(metadata:).each do |request_result|
-          folder_path = File.join(build_path, request_result.path)
+          file_path = output_path(build_path:, path: request_result.path)
 
-          puts "#{folder_path} => #{request_result.status}"
+          puts "#{file_path} => #{request_result.status}"
           next unless request_result.html
 
-          FileUtils.mkdir_p(folder_path)
-          File.write(File.expand_path('index.html', folder_path), request_result.html)
+          FileUtils.mkdir_p(File.dirname(file_path))
+          File.write(file_path, request_result.html)
         end
+      end
+
+      # Pages are files so hosts like Cloudflare Pages serve "docs.html" at "/docs" without a trailing slash.
+      def output_path(build_path:, path:)
+        return File.join(build_path, 'index.html') if path == '/'
+
+        File.join(build_path, "#{path.delete_suffix('/')}.html")
       end
 
       private
