@@ -13,19 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.11.0
 
-## Added
+### Added
 
 - Add an asset compile pipeline for CSS and JS
 - Add lowdata
 
 ## 0.10.0
 
-## Added
+### Added
 
 - List support `<{ list: item folder: 'cards' }>`
 - Raindown write-back/replace markdown feature
-
-### Added
 
 ## 0.9.10
 

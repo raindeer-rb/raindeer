@@ -11,14 +11,18 @@ Gem::Specification.new do |spec|
   spec.summary = "An event-driven and compositional web framework that's easy to use. Deer to be different."
   spec.description = <<~TEXT
     Raindeer is an event-driven framework using the dynamic features and latest async improvements in Ruby + some weird ideas,#{' '}
-    to build a new breed of web application. Each Raindeer component can be used individually in your exisiting application,#{' '}
+    to build a new breed of web application. Each Raindeer component can be used individually in your existing application,#{' '}
     or all together as a cohesive framework. Deer to be different.
   TEXT
 
+  spec.license = 'MPL-2.0'
   spec.required_ruby_version = '>= 3.3.0'
-  spec.homepage = 'https://github.com/raindeer-rb/raindeer'
+  spec.homepage = 'https://raindeer.dev'
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = 'https://github.com/raindeer-rb/raindeer/src/branch/main'
+  spec.metadata['documentation_uri'] = 'https://raindeer.dev/docs/getting-started/'
+  spec.metadata['source_code_uri'] = 'https://github.com/raindeer-rb/raindeer/tree/main'
+  spec.metadata['changelog_uri'] = 'https://github.com/raindeer-rb/raindeer/blob/main/CHANGELOG.md'
+  spec.metadata['bug_tracker_uri'] = 'https://github.com/raindeer-rb/raindeer/issues'
   spec.metadata['mailing_list_uri'] = 'https://www.rubyforum.org/tag/raindeer'
 
   # Specify which files should be added to the gem when it is released.
@@ -43,10 +47,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'lowtype', '~> 1.6'
 
   spec.add_dependency 'antlers', '~> 1.3'
-  spec.add_dependency 'expressions'
-  spec.add_dependency 'observers'
-  spec.add_dependency 'plugs'
-  spec.add_dependency 'providers'
+  spec.add_dependency 'expressions', '~> 0.4'
+  spec.add_dependency 'observers', '~> 0.9'
+  spec.add_dependency 'plugs', '~> 0.4'
+  spec.add_dependency 'providers', '~> 0.6'
   spec.add_dependency 'raindown', '~> 0.2'
-  spec.add_dependency 'trees'
+  spec.add_dependency 'trees', '~> 0.3'
 end

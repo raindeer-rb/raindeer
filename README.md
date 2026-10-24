@@ -9,7 +9,7 @@
 <a href="https://www.rubyforum.org/tag/raindeer"><img alt="Ruby Users Forum" src="https://img.shields.io/discourse/topics?server=https%3A%2F%2Fwww.rubyforum.org&style=flat&logo=discourse&label=Ruby%20Users%20Forum" height="18"></a>
 
 
-Raindeer is an event-driven framework using the dynamic features and latest async improvements in Ruby + some weird ideas, to build a new breed of web application. Each Raindeer component can be used individually in your exisiting application, or all together as a cohesive framework. **Deer to be different.**
+Raindeer is an event-driven framework using the dynamic features and latest async improvements in Ruby + some weird ideas, to build a new breed of web application. Each Raindeer component can be used individually in your existing application, or all together as a cohesive framework. **Deer to be different.**
 
 ## Components
 
@@ -59,7 +59,7 @@ Anything that just "is how it is" can be made simpler. It can take a lot of time
 
 ### 🧩 The Framework Anti-Pattern
 
-Developers will use patterns applicable to their application that are different to the framework's. This results in a tension between highly rigid framework patterns (MVC) and an application's. We shouldn't fight this but provide compositional entities and events that glue the application together. Raindeer uses [LowNode](https://github.com/low-rb/low_node) to intercept the "request and response" layer then gets out of the way and let's the application structure itself from there.
+Developers will use patterns applicable to their application that are different to the framework's. This results in a tension between highly rigid framework patterns (MVC) and an application's. We shouldn't fight this but provide compositional entities and events that glue the application together. Raindeer uses [LowNode](https://github.com/low-rb/low_node) to intercept the "request and response" layer then gets out of the way and lets the application structure itself from there.
 
 ### 👣 No build steps
 

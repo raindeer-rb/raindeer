@@ -115,21 +115,21 @@ PATH
     raindeer (0.12.0)
       antlers (~> 1.3)
       dirload (~> 0.7)
-      expressions
+      expressions (~> 0.4)
       listen
       lowdata (~> 0.3)
       lowevent (~> 0.8)
       lowloop (~> 0.8)
       lownode (~> 0.5)
       lowtype (~> 1.6)
-      observers
+      observers (~> 0.9)
       ostruct
       paint
-      plugs
-      providers
+      plugs (~> 0.4)
+      providers (~> 0.6)
       raindown (~> 0.2)
       ruby-progressbar
-      trees
+      trees (~> 0.3)
 
 GEM
   remote: https://rubygems.org/
