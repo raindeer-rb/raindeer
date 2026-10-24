@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'events/receive_event'
 require_relative 'events/route_event'
 require_relative 'route'
 require_relative 'trie_node'
@@ -75,6 +76,8 @@ module Rain
 
       actions = [action]
       actions << request.method.downcase.to_sym unless action == :side_effect
+
+      return Events::ReceiveEvent.new(actions:, route:, params:, request:) if action == :receive
 
       Events::RouteEvent.new(actions:, route:, params:)
     end

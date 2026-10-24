@@ -41,20 +41,11 @@ module Rain
       @current_level.pop
     end
 
-    def get(path, &block)
-      route(GET => path, &block)
-    end
-
-    def post(path, &block)
-      route(POST => path, &block)
-    end
-
-    def update(path, &block)
-      route(UPDATE => path, &block)
-    end
-
-    def delete(path, &block)
-      route(DELETE => path, &block)
+    # A route for each HTTP verb, like "put '/path'".
+    VERBS.each do |verb|
+      define_method(verb) do |path, &block|
+        route(verb => path, &block)
+      end
     end
 
     def request(event: RequestEvent)

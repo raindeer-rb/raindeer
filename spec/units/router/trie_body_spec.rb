@@ -17,7 +17,8 @@ module Rain
       context 'with a request body' do
         let(:request) { Low::Support::RequestFactory.request(path: '/feedback', verb: 'POST', body: 'a=1') }
 
-        it 'creates a route event that receives' do
+        it 'creates a receive event that receives' do
+          expect(trie.match(request:).first).to be_instance_of(Events::ReceiveEvent)
           expect(trie.match(request:).first.actions).to eq(%i[receive post])
         end
       end
@@ -26,6 +27,7 @@ module Rain
         let(:request) { Low::Support::RequestFactory.request(path: '/feedback', verb: 'POST') }
 
         it 'creates a route event that renders' do
+          expect(trie.match(request:).first).to be_instance_of(Events::RouteEvent)
           expect(trie.match(request:).first.actions).to eq(%i[render post])
         end
       end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../router/http'
+require_relative '../router/events/receive_event'
 require_relative '../router/events/route_event'
 require_relative '../router/events/wildcard_event'
 

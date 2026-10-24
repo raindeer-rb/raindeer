@@ -50,6 +50,14 @@ RSpec.describe Rain::Router do
         expect(router.routes['/users/:id']).to have_attributes(path: '/users/:id', verbs: [:get])
       end
     end
+
+    context 'with verb method' do
+      it 'creates a route for each HTTP verb' do
+        Rain::HTTP::VERBS.each { |verb| router.public_send(verb, "/#{verb}") }
+
+        expect(Rain::HTTP::VERBS.map { |verb| router.routes["/#{verb}"].verbs }).to eq(Rain::HTTP::VERBS.map { [it] })
+      end
+    end
   end
 
   describe '#request' do
