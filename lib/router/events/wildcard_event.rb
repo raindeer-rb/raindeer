@@ -3,13 +3,15 @@
 require 'lowevent'
 
 module Rain
-  class WildcardEvent < ::LowEvent
-    attr_reader :route, :params
+  module Events
+    class WildcardEvent < ::LowEvent
+      attr_reader :route, :params
 
-    def initialize(key:, route:, action: :render)
-      super(key:, action:)
+      def initialize(key:, route:, action: :render)
+        super(key:, action:)
 
-      @route = route
+        @route = route
+      end
     end
   end
 end

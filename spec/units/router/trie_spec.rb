@@ -45,7 +45,7 @@ module Rain
         it 'creates a route event' do
           trie.merge(route: Route.new(path: '/users'))
 
-          expect(trie.match(request:)).to all(be_instance_of(RouteEvent))
+          expect(trie.match(request:)).to all(be_instance_of(Events::RouteEvent))
           expect(trie.match(request:).first.route).to have_attributes(path: '/users')
         end
       end
@@ -56,7 +56,7 @@ module Rain
         it 'creates a route event' do
           trie.merge(route: Route.new(path: '/users/:id'))
 
-          expect(trie.match(request:)).to all(be_instance_of(RouteEvent))
+          expect(trie.match(request:)).to all(be_instance_of(Events::RouteEvent))
           expect(trie.match(request:).first.route).to have_attributes(path: '/users/:id')
         end
       end
@@ -94,7 +94,7 @@ module Rain
         end
 
         it 'creates multiple route events' do
-          expect(trie.match(request:)).to all(be_instance_of(RouteEvent))
+          expect(trie.match(request:)).to all(be_instance_of(Events::RouteEvent))
           expect(trie.match(request:).first.route).to have_attributes(path: '/users')
           expect(trie.match(request:).last.route).to have_attributes(path: '/users/:id')
         end

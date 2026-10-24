@@ -76,7 +76,7 @@ module Rain
       actions = [action]
       actions << request.method.downcase.to_sym unless action == :side_effect
 
-      RouteEvent.new(actions:, route:, params:)
+      Events::RouteEvent.new(actions:, route:, params:)
     end
 
     def capture_param(current_index:, path:)

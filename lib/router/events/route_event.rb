@@ -3,14 +3,16 @@
 require 'lowevent'
 
 module Rain
-  class RouteEvent < ::LowEvent
-    attr_reader :route, :params
+  module Events
+    class RouteEvent < ::LowEvent
+      attr_reader :route, :params
 
-    def initialize(route:, actions: [], params: Hash | nil)
-      super(key: route.path, actions:)
+      def initialize(route:, actions: [], params: Hash | nil)
+        super(key: route.path, actions:)
 
-      @route = route
-      @params = params
+        @route = route
+        @params = params
+      end
     end
   end
 end
